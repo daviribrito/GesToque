@@ -12,7 +12,7 @@ Sistema web de estoque e previsão de compras (pt-BR). Não registra vendas.
 ## 2. Ferramentas (fora do PATH, em `.tools/`)
 - Node `.tools\node\node.exe` · npm: pôr `.tools\node` no PATH e usar `npm.cmd`
 - Git `.tools\git\cmd\git.exe` · gh `.tools\gh\bin\gh.exe` (conta `daviribrito`, escopo `workflow`)
-- `iniciar.cmd` (localhost:3100) · `configurar-admin.cmd` · `carregar-exemplo.cmd` (só banco local)
+- `iniciar.cmd` (localhost:3500) · `configurar-admin.cmd` · `carregar-exemplo.cmd` (só banco local)
 
 ## 3. Arquitetura
 - `server/` Node puro. `app.js` = tabela de rotas `[método, regex, função, 'aberto'|'logado'|'admin']`; lista e regras em `docs/API.md` (atualizar ao mexer em rotas).
@@ -55,7 +55,7 @@ Fora da produção aparece o selo "Ambiente de teste" (`config.AMBIENTE`) em tod
 
 ## 7. Preferências do usuário
 - Português do Brasil, linguagem simples.
-- "start server" → responder só `http://localhost:3100 OK` (explicar só se der erro).
+- "start server" → responder só `http://localhost:3500 OK` (explicar só se der erro).
 
 ## 8. Interface
 - No sistema o endereço nunca muda. Exceções: `/version` (`/novidades`, `/versao`, `/release`, `/releases`), `/duvidas` (`/duvida`, `/manual`), `/duvidasdev` (`/duvidas-dev`, só admin) e `/partner` (registro da API, só admin).

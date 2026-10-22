@@ -48,7 +48,7 @@ module.exports = {
   ROOT,
   // require com caminho fixo: a Vercel só empacota na função os arquivos que consegue ver assim.
   VERSION: require('../package.json').version,
-  PORT: Number(process.env.PORT) || 3100,
+  PORT: Number(process.env.PORT) || 3500,
   DATABASE_URL: databaseUrl,
   DATABASE_CA_FILE: process.env.DATABASE_CA_FILE || '',
   PRODUCTION: process.env.NODE_ENV === 'production',

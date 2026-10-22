@@ -56,7 +56,7 @@ O projeto usa Node e Git portáteis na pasta `.tools/` (fora do Git). Em outra m
 
 1. Copie `.env.example` para `.env` e troque `[YOUR-PASSWORD]` pela senha do banco do Supabase.
 2. `configurar-admin.cmd` cria o primeiro admin.
-3. `iniciar.cmd` abre o sistema em http://localhost:3100.
+3. `iniciar.cmd` abre o sistema em http://localhost:3500.
 
 Sem `DATABASE_URL` válido o sistema usa um Postgres local em `data/` (PGlite), só para testes. `carregar-exemplo.cmd` enche esse banco local com itens de exemplo.
 
