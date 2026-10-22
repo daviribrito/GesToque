@@ -839,6 +839,34 @@ dialog.novidade-dialogo { width: min(640px, calc(100vw - 32px)); }
   .novidade-mascote, .novidade-selo, .novidade-grupo, .novidade-grupo li { animation: none; }
 }
 
+/* ---------- Tutorial do primeiro acesso ---------- */
+
+dialog.tutorial-dialogo { width: min(520px, calc(100vw - 32px)); }
+.tutorial { display: grid; gap: 18px; }
+.tutorial-pontos { display: flex; gap: 6px; padding-right: 44px; }
+.tutorial-pontos span { flex: 1; height: 5px; border-radius: 999px; background: var(--tinta-leve); transition: background 0.3s ease; }
+.tutorial-pontos span.on { background: var(--destaque-forte); }
+:root[data-tema='escuro'] .tutorial-pontos span.on { background: var(--destaque); }
+.tutorial-passo { min-height: 300px; display: grid; align-content: start; }
+.tutorial-cartao { display: grid; gap: 10px; justify-items: start; animation: tutorial-entra 0.35s ease-out both; }
+.tutorial-cartao h2 { font-size: 1.5rem; padding-right: 0; }
+.tutorial-cartao p { margin: 0; }
+.tutorial-mascote { width: 96px; height: auto; animation: novidade-mascote 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.tutorial-icone { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 20px; background: var(--destaque); color: #000; }
+.tutorial-icone .icone { width: 34px; height: 34px; }
+.tutorial-conta { color: var(--suave); font: 700 0.78rem/1.4 var(--corpo); text-transform: uppercase; letter-spacing: 0.04em; }
+.tutorial-dica { padding: 10px 14px; border-left: 3px solid var(--destaque); border-radius: 0 12px 12px 0; background: var(--tinta-leve); line-height: 1.9; }
+.tutorial .rodape { margin-top: 0; align-items: center; }
+@keyframes tutorial-entra { from { opacity: 0; transform: translateX(calc(var(--dir, 1) * 16px)); } }
+@media (max-width: 700px) {
+  .tutorial-passo { min-height: 340px; }
+  .tutorial-cartao h2 { font-size: 1.3rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tutorial-cartao, .tutorial-mascote { animation: none; }
+  .tutorial-pontos span { transition: none; }
+}
+
 /* ---------- Perfil ---------- */
 
 .perfil { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px 32px; align-items: center; }

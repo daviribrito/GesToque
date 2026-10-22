@@ -267,8 +267,18 @@
     try { seen = localStorage.getItem(SEEN_KEY()); } catch { seen = state.seenVersionMem; }
     if (seen === release.version || !state.user || $dialog.open) return;
     whatsNewDialog(release);
-    state.seenVersionMem = release.version;
-    try { localStorage.setItem(SEEN_KEY(), release.version); } catch { /* vale só nesta visita */ }
+    markVersionSeen(release.version);
+  }
+  function markVersionSeen(version) {
+    state.seenVersionMem = version;
+    try { localStorage.setItem(SEEN_KEY(), version); } catch { /* vale só nesta visita */ }
+  }
+
+  // Janelas ao entrar: tutorial (primeiro acesso) ou aviso de versão nova; o alerta de estoque espera a janela fechar.
+  function welcomeDialogs(forceAlert = false) {
+    maybeTutorial()
+      .then((shown) => shown || maybeWhatsNew())
+      .finally(() => maybeLowStockAlert(forceAlert));
   }
 
   function whatsNewDialog(r) {
@@ -307,6 +317,131 @@
       dlg.querySelector('.rodape .botao:not(.claro)').focus({ preventScroll: true });
       dlg.scrollTop = 0;
     }, 'novidade-dialogo');
+  }
+
+  // ---------- Tutorial do primeiro acesso ----------
+  // Abre uma vez por usuário (gravado no servidor: users.tutorial_seen_at), em qualquer aparelho.
+  // É marcado como visto ao abrir; dá para rever em Configurações > Ajuda.
+
+  async function maybeTutorial() {
+    if (!state.user || state.user.tutorial_seen || $dialog.open) return false;
+    state.user.tutorial_seen = true;
+    tutorialDialog();
+    api('POST', '/api/eu/tutorial').catch(() => {});
+    // Quem acabou de chegar não precisa do aviso da versão atual: já conta como visto.
+    try { markVersionSeen((await api('GET', '/api/versao')).version); } catch { /* aparece no próximo acesso */ }
+    return true;
+  }
+
+  function tutorialSteps() {
+    const phone = window.matchMedia('(max-width: 900px)').matches;
+    const first = esc(String(state.user.name || '').split(' ')[0]);
+    const steps = [
+      {
+        mascot: true,
+        title: `Boas-vindas ao GesToque${first ? `, ${first}` : ''}!`,
+        text: 'Em um minuto você vê o básico: onde fica cada coisa e como manter o estoque certo para a previsão de compra funcionar.',
+        tip: phone
+          ? 'No celular, as telas principais ficam na barra embaixo e o resto em <strong>Mais</strong>.'
+          : 'As telas ficam no menu ao lado. Se preferir, ele pode ir para o topo em <strong>Configurações</strong>.',
+      },
+      {
+        icon: 'estoque', title: 'Estoque',
+        text: 'Tudo o que a loja tem agora. Cada item mostra quanto há, o estoque mínimo, quanto sai por dia e por quantos dias o saldo dura. Para cadastrar, use <strong>Adicionar item</strong>.',
+        tip: '<span class="selo ok">Em dia</span> acima do mínimo · <span class="selo baixo">Abaixo do mínimo</span> hora de comprar · <span class="selo zerado">Sem estoque</span> acabou.',
+      },
+      {
+        icon: 'movimentacoes', title: 'Movimentações',
+        text: 'Toda mudança no estoque é uma movimentação: <strong>Saída</strong> (o que foi usado), <strong>Entrada</strong> (o que chegou de compra) e <strong>Contagem</strong> (o que você contou na prateleira). O saldo muda na hora.',
+        tip: 'Movimentação não se edita. Errou? Faça uma <strong>Contagem</strong> com o número certo e o sistema acerta a diferença. O saldo nunca fica negativo.',
+      },
+      {
+        icon: 'registro', title: 'Planilhas',
+        text: 'Nas telas Estoque e Movimentações dá para <strong>importar</strong> e <strong>exportar</strong> em Excel ou CSV. O sistema confere a planilha antes de gravar e ignora movimentação repetida.',
+        tip: 'Exporte primeiro: o arquivo exportado já é o modelo com as colunas certas.',
+      },
+      {
+        icon: 'estimativas', title: 'Estimativa de uso',
+        text: 'O sistema aprende pelas saídas quanto cada item gasta em cada dia da semana e nos feriados. Sabe de um evento ou promoção? Digite a sua estimativa e ela passa a valer na previsão.',
+      },
+      {
+        icon: 'previsao', title: 'Previsão de compra',
+        text: 'Uma fatura por mês, como a do cartão: quanto comprar de cada item, quanto custa e até quando pedir. Chegou a mercadoria? Toque em <strong>Registrar compra</strong>.',
+        tip: 'Quanto mais saídas registradas no dia a dia, mais certa fica a previsão.',
+      },
+      {
+        icon: 'compras', title: 'Histórico de compras',
+        text: 'Cada entrada guarda o preço pago e o fornecedor daquele dia. Assim dá para ver como o preço de cada item mudou.',
+      },
+      isAdmin()
+        ? {
+          icon: 'usuarios', title: 'Só para admin',
+          text: 'Você também tem <strong>Métricas</strong> (folga e pesos da previsão), <strong>Usuários</strong>, <strong>Itens removidos</strong> e <strong>Consulta SQL</strong>. O sino mostra os pedidos de usuário novo.',
+        }
+        : {
+          icon: 'perfil', title: 'Seu espaço',
+          text: 'Em <strong>Perfil</strong> você troca seu nome e sua foto. Precisa de acesso para outra pessoa? Use <strong>Solicitar usuário</strong>: um admin aprova.',
+        },
+      {
+        icon: 'ajuda', title: 'Tudo pronto!',
+        text: 'Ao entrar e a cada 3 horas, o sistema avisa se algum item chegou no estoque mínimo.',
+        tip: 'Ficou alguma dúvida? Em <strong>Configurações</strong> estão a Central de dúvidas e este tutorial, para ver de novo.',
+      },
+    ];
+    return steps;
+  }
+
+  function tutorialDialog() {
+    const steps = tutorialSteps();
+    let at = 0;
+    openDialog(`
+      <div class="tutorial">
+        <div class="tutorial-pontos" aria-hidden="true">${steps.map(() => '<span></span>').join('')}</div>
+        <div class="tutorial-passo" aria-live="polite"></div>
+        <div class="rodape">
+          <button class="botao-texto esquerda" type="button" data-fechar data-pular>Pular tutorial</button>
+          <button class="botao claro" type="button" data-anterior>Voltar</button>
+          <button class="botao" type="button" data-proximo>Próximo</button>
+        </div>
+      </div>`, (dlg) => {
+      const box = dlg.querySelector('.tutorial-passo');
+      const prev = dlg.querySelector('[data-anterior]');
+      const next = dlg.querySelector('[data-proximo]');
+      const skip = dlg.querySelector('[data-pular]');
+      const dots = dlg.querySelectorAll('.tutorial-pontos span');
+      const show = (i, dir = 1) => {
+        at = Math.max(0, Math.min(steps.length - 1, i));
+        const s = steps[at];
+        box.style.setProperty('--dir', dir);
+        box.innerHTML = `
+          <div class="tutorial-cartao">
+            ${s.mascot
+              ? '<img class="tutorial-mascote" src="/img/caixa.svg" alt="">'
+              : `<span class="tutorial-icone">${icon(s.icon)}</span>`}
+            <p class="tutorial-conta">${at + 1} de ${steps.length}</p>
+            <h2>${s.title}</h2>
+            <p>${s.text}</p>
+            ${s.tip ? `<p class="tutorial-dica">${s.tip}</p>` : ''}
+          </div>`;
+        dots.forEach((d, n) => d.classList.toggle('on', n <= at));
+        const last = at === steps.length - 1;
+        prev.hidden = at === 0;
+        skip.hidden = last;
+        next.textContent = last ? 'Começar a usar' : at === 0 ? 'Mostrar' : 'Próximo';
+        next.focus({ preventScroll: true });
+      };
+      prev.addEventListener('click', () => show(at - 1, -1));
+      next.addEventListener('click', () => {
+        if (at === steps.length - 1) return closeDialog();
+        show(at + 1, 1);
+      });
+      dlg.querySelector('.tutorial').addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' && at < steps.length - 1) show(at + 1, 1);
+        else if (e.key === 'ArrowLeft' && at > 0) show(at - 1, -1);
+      });
+      show(0);
+      dlg.scrollTop = 0;
+    }, 'tutorial-dialogo');
   }
 
   // ---------- Alerta de itens abaixo do mínimo ----------
@@ -499,8 +634,7 @@
         state.user = out.user;
         activity.last = activity.ping = Date.now();
         renderShell();
-        // Aviso de versão nova primeiro; o alerta de estoque espera ele fechar.
-        maybeWhatsNew().finally(() => maybeLowStockAlert(true));
+        welcomeDialogs(true);
       });
     });
     form.code.focus();
@@ -2083,6 +2217,9 @@
           <a class="link-ajuda" href="/duvidas" data-ajuda>
             ${icon('ajuda')}<span><strong>Central de dúvidas</strong><small>Manual do sistema, passo a passo, com as perguntas mais comuns.</small></span>
           </a>
+          <button class="link-ajuda" type="button" data-ver-tutorial>
+            ${icon('estoque')}<span><strong>Ver o tutorial de novo</strong><small>O passeio rápido do primeiro acesso: estoque, movimentações, previsão e mais.</small></span>
+          </button>
           <a class="link-ajuda" href="/version" data-ajuda>
             ${icon('novidades')}<span><strong>Novidades da versão</strong><small>O que mudou em cada versão. Você está na v${esc(version)}.</small></span>
           </a>
@@ -2101,6 +2238,7 @@
     tela.querySelectorAll('[data-ajuda]').forEach((a) => a.addEventListener('click', () => {
       try { sessionStorage.setItem('gt_voltar', 'configuracoes'); } catch { /* sem armazenamento: sem botão de voltar */ }
     }));
+    tela.querySelector('[data-ver-tutorial]').addEventListener('click', tutorialDialog);
     tela.querySelector('[data-ver-aviso]').addEventListener('click', async (e) => {
       const btn = e.currentTarget;
       btn.disabled = true;
@@ -2174,7 +2312,7 @@
       if (back) state.view = back;
       if (state.user) {
         renderShell();
-        maybeWhatsNew().finally(() => maybeLowStockAlert());
+        welcomeDialogs();
       } else renderLogin();
     } catch {
       renderLogin();

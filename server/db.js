@@ -71,6 +71,8 @@ alter table gestoque.users add column if not exists photo text;
 alter table gestoque.users add column if not exists photo_key text;
 alter table gestoque.users add column if not exists photo_type text;
 alter table gestoque.users add column if not exists photo_version integer not null default 0;
+-- Tutorial do primeiro acesso: quando a pessoa viu (null = ainda não viu; abre ao entrar, em qualquer aparelho).
+alter table gestoque.users add column if not exists tutorial_seen_at timestamptz;
 
 -- Fornecedor no momento da compra: o do cadastro pode mudar depois.
 alter table gestoque.movements add column if not exists supplier text not null default '';
@@ -245,7 +247,7 @@ begin
   end loop;
   revoke all on gestoque.users, gestoque.sessions from gestoque_leitura;
   grant select (id, username, name, role, active, totp_enabled, failed_logins, locked_until, created_at,
-                keep_alive, code_failures, code_locked) on gestoque.users to gestoque_leitura;
+                keep_alive, code_failures, code_locked, tutorial_seen_at) on gestoque.users to gestoque_leitura;
   begin
     execute format('grant gestoque_leitura to %I with set true, inherit false', current_user);
   exception when syntax_error then

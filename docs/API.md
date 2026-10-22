@@ -28,6 +28,7 @@ Tipo: REST com JSON sobre HTTPS (não é SOAP nem GraphQL). Autenticação: cook
 | POST | `/api/eu/senha` | logado | Trocar a própria senha |
 | POST | `/api/eu/ativo` | logado | Avisa uso (renova a sessão) |
 | PATCH | `/api/eu/preferencias` | logado | "Manter ativo" |
+| POST | `/api/eu/tutorial` | logado | Marca o tutorial do primeiro acesso como visto |
 | GET | `/api/eu/perfil` | logado | Perfil de quem está logado: nome, usuário, perfil, data de cadastro e foto |
 | GET | `/api/eu/foto?u=<id>&v=<versão>` | logado | A própria foto (imagem). Cache privado de 1 ano no navegador; o endereço muda a cada troca. **Nunca entra no registro** |
 | PUT | `/api/eu/foto` | logado | Insere ou troca a própria foto (`{ photo }`: data URL JPG/PNG/WEBP, até 256 KB) no Storage privado. Registro: "inserida"/"trocada", sem a imagem |

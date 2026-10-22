@@ -193,7 +193,7 @@ fetch('/api/itens', {
   <div class="rolagem"><table>
     <thead><tr><th>Tabela</th><th>Guarda</th></tr></thead>
     <tbody>
-      <tr><td><code>users</code></td><td>Usuários, hash da senha, segredo TOTP, contadores de erro e bloqueios</td></tr>
+      <tr><td><code>users</code></td><td>Usuários, hash da senha, segredo TOTP, contadores de erro e bloqueios; <code>tutorial_seen_at</code> = quando viu o tutorial do primeiro acesso (null abre o tutorial ao entrar; marcado por <code>POST /api/eu/tutorial</code>)</td></tr>
       <tr><td><code>sessions</code></td><td>Sessões (hash do cookie, aparelho, se passou do código, quando expira)</td></tr>
       <tr><td><code>items</code></td><td>Itens do estoque (SKU é a chave das planilhas). <code>units_per_pack</code>: unidades em 1 pacote (null = item comum); o saldo fica em pacotes</td></tr>
       <tr><td><code>movements</code></td><td>Entradas, saídas e contagens (não se editam)</td></tr>

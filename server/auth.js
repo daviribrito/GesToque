@@ -71,6 +71,7 @@ const publicUser = (u) => ({
   role: u.role,
   keep_alive: u.keep_alive,
   idle_minutes: IDLE_MINUTES,
+  tutorial_seen: Boolean(u.tutorial_seen_at),
 });
 
 async function loadSession(req) {
@@ -231,6 +232,12 @@ async function setPreferences(ctx) {
     new Date(Date.now() + (keep ? KEEP_MS : IDLE_MS)),
   ]);
   return { user: publicUser({ ...ctx.user, keep_alive: keep }) };
+}
+
+// Tutorial do primeiro acesso: a tela marca ao abrir, para não repetir em outro aparelho ou ao recarregar.
+async function markTutorialSeen(ctx) {
+  await db.query('update gestoque.users set tutorial_seen_at = coalesce(tutorial_seen_at, now()) where id = $1', [ctx.user.id]);
+  return { ok: true };
 }
 
 async function logout(ctx) {
@@ -519,6 +526,7 @@ module.exports = {
   touchSession,
   ping,
   setPreferences,
+  markTutorialSeen,
   login,
   verifyCode,
   logout,

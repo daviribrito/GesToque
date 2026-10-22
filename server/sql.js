@@ -17,7 +17,7 @@ const WRAP = 'select * from (\n'; // envolve a consulta da pessoa (ver run)
 const TABLES = ['items', 'movements', 'overrides', 'settings', 'users', 'user_requests', 'removed_items',
   'removed_items_history', 'removed_items_purchases', 'api_logs'];
 const USERS_COLUMNS = ['id', 'username', 'name', 'role', 'active', 'totp_enabled', 'failed_logins', 'locked_until',
-  'created_at', 'keep_alive', 'code_failures', 'code_locked'];
+  'created_at', 'keep_alive', 'code_failures', 'code_locked', 'tutorial_seen_at'];
 
 // Funções que trocariam o papel no meio da consulta ou rodariam outro SQL por dentro: bloqueadas.
 const BLOCKED = /\b(set_config|query_to_xml\w*|query_to_xmlschema|table_to_xml\w*|cursor_to_xml\w*|schema_to_xml\w*|database_to_xml\w*|ts_stat|dblink\w*|pg_read_\w+|pg_ls_\w+|pg_stat_file|lo_\w+|pg_sleep\w*|pg_terminate_backend|pg_cancel_backend|pg_reload_conf|pg_advisory\w*)\s*\(/i;

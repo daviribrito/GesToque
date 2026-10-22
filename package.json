@@ -1,6 +1,6 @@
 {
   "name": "gestoque",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "description": "Gestão de estoque e previsão de compras da GesToque",
   "engines": { "node": ">=22" },

@@ -9,11 +9,14 @@ Atualizado em 2026-10-22. Atualize ao terminar cada tarefa importante.
 - Trocado: nome, textos, logo (caixa isométrica), mascote (caixa com rosto: parada, chegando e assustada, em SVG), fundo (formas suaves + grade de pontos),
   paleta verde-azulada, fonte de título Sora, schema `gestoque`, papel `gestoque_leitura`, chaves `gt_*` no navegador, variáveis `GT_*`, cabeçalho `X-GT`,
   app Android `com.gestoque.app` com ícones e abertura novos. Feriados locais saíram (ficaram os nacionais e o Carnaval).
-- Ainda **sem** Supabase, Vercel e repositório no GitHub próprios. Roda só com o banco local (PGlite em `data/`).
+- 2026-10-22: repositório no GitHub criado (`daviribrito/GesToque`, branches `Dev` e `main`). Ainda **sem** Supabase e Vercel: roda só com o banco local (PGlite em `data/`).
+- 2026-10-22 (v0.1.4): tutorial rápido no primeiro acesso (9 passos, último muda por perfil). Visto fica no servidor
+  (`users.tutorial_seen_at`, `POST /api/eu/tutorial`), marcado ao abrir; rever em Configurações > Ajuda. Quem vê o tutorial
+  já fica com a versão atual como vista (sem o aviso de versão nova logo em seguida). Testado com gestor e admin no banco local.
 
 ## 2. Próxima tarefa
 1. Criar os projetos do Supabase (produção e dev) e preencher o `.env` a partir do `.env.example`.
-2. Criar o repositório no GitHub e o projeto na Vercel (`DATABASE_URL` e `DATABASE_URL_Dev`, sempre pelo pooler).
+2. Criar o projeto na Vercel ligado ao repositório do GitHub (`DATABASE_URL` e `DATABASE_URL_Dev`, sempre pelo pooler).
 3. Cadastrar `APP_URL` no GitHub para gerar o APK.
 
 ## 3. Validar antes de continuar

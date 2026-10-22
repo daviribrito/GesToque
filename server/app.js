@@ -54,6 +54,7 @@ const routes = [
   ['POST', /^\/api\/eu\/senha$/, auth.changeOwnPassword, 'logado', 'Trocar a própria senha (encerra as outras sessões)'],
   ['POST', /^\/api\/eu\/ativo$/, auth.ping, 'logado', 'Avisa uso da tela e renova a sessão'],
   ['PATCH', /^\/api\/eu\/preferencias$/, auth.setPreferences, 'logado', 'Liga ou desliga "Manter ativo"'],
+  ['POST', /^\/api\/eu\/tutorial$/, auth.markTutorialSeen, 'logado', 'Marca o tutorial do primeiro acesso como visto (abre ao entrar só enquanto não foi visto)'],
   ['GET', /^\/api\/eu\/perfil$/, auth.profile, 'logado', 'Perfil de quem está logado: nome, usuário, perfil, data de cadastro e foto'],
   ['GET', /^\/api\/eu\/foto$/, auth.getPhoto, 'logado', 'A própria foto (imagem). ?v=versão; cache privado de 1 ano no navegador. Nunca entra no registro'],
   ['PUT', /^\/api\/eu\/foto$/, auth.setPhoto, 'logado', 'Insere ou troca a própria foto ({ photo: data URL JPG/PNG/WEBP, até 256 KB }); vai para o Storage privado. Registro: "inserida" ou "trocada", sem a imagem'],
