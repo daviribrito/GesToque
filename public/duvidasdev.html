@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Documentação técnica</title>
+  <script src="/js/tema.js"></script>
+  <link rel="icon" href="/img/logo-gestoque.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/duvidas.css">
+  <link rel="stylesheet" href="/css/duvidasdev.css">
+</head>
+<body>
+  <div class="cenario" aria-hidden="true"></div>
+
+  <!-- Casca da documentação técnica (/duvidasdev). O conteúdo NÃO fica aqui: vem de
+       GET /api/dev/documentacao, que só responde para admin logado (cookie + token). -->
+  <main class="manual">
+    <header class="manual-topo vidro">
+      <img class="manual-mascote" src="/img/caixa.svg" alt="">
+      <div class="manual-titulo">
+        <h1>Documentação técnica</h1>
+        <p>Como o sistema é feito: arquitetura, API, autenticação, segurança, banco e publicação. Só para administradores.</p>
+        <label class="busca" hidden>
+          <span class="so-leitor">Buscar na documentação</span>
+          <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input type="search" id="busca" placeholder="Busque: token, cookie, JWT, rota, banco..." autocomplete="off">
+        </label>
+        <p class="busca-resultado" id="busca-resultado" role="status" aria-live="polite"></p>
+      </div>
+      <div class="manual-acoes" id="tema"></div>
+    </header>
+
+    <div class="manual-corpo">
+      <nav class="manual-indice vidro" aria-label="Assuntos" hidden>
+        <h2>Assuntos</h2>
+        <ol id="indice"></ol>
+      </nav>
+      <div class="manual-conteudo" id="conteudo">
+        <section class="vidro painel"><p>Carregando a documentação...</p></section>
+      </div>
+    </div>
+  </main>
+  <script src="/js/ambiente.js" defer></script>
+  <script src="/js/duvidasdev.js" defer></script>
+  <script src="/js/voltar.js" defer></script>
+</body>
+</html>

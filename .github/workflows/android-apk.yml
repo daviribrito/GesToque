@@ -1,0 +1,69 @@
+# Gera o APK do app Android (pasta mobile/) sem precisar de Android Studio no computador.
+# O endereço que o app abre vem da variável APP_URL do repositório
+# (GitHub > Settings > Secrets and variables > Actions > Variables).
+name: APK Android
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [Dev, main]
+    paths:
+      - 'mobile/**'
+      - '.github/workflows/android-apk.yml'
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Instala as dependências
+        run: npm ci
+
+      - name: Define o endereço do sistema
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          if [ -z "$APP_URL" ]; then
+            echo "::error::Cadastre a variável APP_URL do repositório com o endereço da Vercel (ex.: https://gestoque.vercel.app)."
+            exit 1
+          fi
+          npm run endereco -- "$APP_URL"
+
+      - name: Sincroniza o projeto Android
+        run: npx cap sync android
+
+      - name: Gera o APK
+        working-directory: mobile/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Nomeia o APK com a versão
+        id: nome
+        run: |
+          VERSAO=$(node -p "require('./package.json').version")
+          ARQ="gestoque-${VERSAO}-${GITHUB_REF_NAME}-${GITHUB_RUN_NUMBER}.apk"
+          cp android/app/build/outputs/apk/debug/app-debug.apk "$ARQ"
+          echo "arquivo=$ARQ" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.nome.outputs.arquivo }}
+          path: mobile/${{ steps.nome.outputs.arquivo }}
+          retention-days: 30

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <!-- Fundo escuro da GesToque: as mesmas formas, em grafite e verde apagado. -->
+  <defs>
+    <pattern id="p" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="#7fd6c6" opacity="0.08"/>
+    </pattern>
+    <filter id="d" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="40"/></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="#0f1514"/>
+  <g filter="url(#d)">
+    <circle cx="180" cy="160" r="260" fill="#0f766e" opacity="0.45"/>
+    <circle cx="1420" cy="220" r="220" fill="#1e3a36" opacity="0.8"/>
+    <circle cx="1280" cy="880" r="300" fill="#0f766e" opacity="0.35"/>
+    <circle cx="420" cy="900" r="200" fill="#5a3d22" opacity="0.3"/>
+    <circle cx="860" cy="480" r="160" fill="#1e3a36" opacity="0.5"/>
+  </g>
+  <rect width="1600" height="1000" fill="url(#p)"/>
+</svg>

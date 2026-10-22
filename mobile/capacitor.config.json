@@ -1,0 +1,13 @@
+{
+  "appId": "com.gestoque.app",
+  "appName": "GesToque",
+  "webDir": "www",
+  "server": {
+    "url": "https://gestoque.vercel.app",
+    "errorPath": "sem-conexao.html"
+  },
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#7fd6c6"
+  }
+}

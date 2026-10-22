@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sem conexão</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; box-sizing: border-box; background: #f5faf9; color: #16201e; font: 16px/1.5 system-ui, sans-serif; text-align: center; }
+    @media (prefers-color-scheme: dark) { body { background: #0f1514; color: #eef4f3; } }
+    main { max-width: 340px; display: grid; gap: 14px; justify-items: center; }
+    img { width: 150px; height: auto; }
+    h1 { font-size: 1.4rem; margin: 0; }
+    p { margin: 0; opacity: 0.8; }
+    button { min-height: 46px; padding: 0 26px; border: 0; border-radius: 999px; background: #000; color: #fff; font: 600 1rem system-ui, sans-serif; }
+    @media (prefers-color-scheme: dark) { button { background: #7fd6c6; color: #000; } }
+  </style>
+</head>
+<body>
+  <main>
+    <img src="caixa-assustada.svg" alt="">
+    <h1>Sem conexão com o sistema</h1>
+    <p>Confira o Wi-Fi ou os dados móveis do celular e tente de novo.</p>
+    <button type="button" onclick="location.reload()">Tentar de novo</button>
+  </main>
+</body>
+</html>

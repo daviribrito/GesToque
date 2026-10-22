@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Registro da API</title>
+  <script src="/js/tema.js"></script>
+  <link rel="icon" href="/img/logo-gestoque.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/duvidas.css">
+  <link rel="stylesheet" href="/css/duvidasdev.css">
+  <link rel="stylesheet" href="/css/partner.css">
+</head>
+<body>
+  <div class="cenario" aria-hidden="true"></div>
+
+  <!-- Registro da API (/partner), só admin. A página é só a casca: os registros vêm de
+       GET /api/logs e /api/logs/:id, que só respondem para admin logado (cookie + token). -->
+  <main class="manual parceiro">
+    <header class="manual-topo vidro">
+      <img class="manual-mascote" src="/img/caixa.svg" alt="">
+      <div class="manual-titulo">
+        <h1>Registro da API</h1>
+        <p>Tudo o que foi feito pela API: quem pediu, quando, o que foi enviado e o que o servidor respondeu. Só para administradores.</p>
+      </div>
+      <div class="manual-acoes" id="tema"></div>
+    </header>
+    <div id="conteudo">
+      <section class="vidro painel"><p>Carregando...</p></section>
+    </div>
+  </main>
+  <script src="/js/ambiente.js" defer></script>
+  <script src="/js/partner.js" defer></script>
+  <script src="/js/voltar.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+{
+  "_como_editar": "Cada versão nova entra no topo da lista 'releases'. A página /novidades lê este arquivo a cada acesso: não precisa reiniciar o sistema. Em cada seção, 'type' diz o selo do aviso de versão nova: 'novo', 'melhoria' ou 'ajuste'.",
+  "releases": [
+    {
+      "version": "0.1.3",
+      "date": "2026-10-20",
+      "title": "Perfil do gestor, fotos protegidas e aviso de novidades",
+      "summary": "Cada gestor ganhou a tela Perfil, com nome e foto. As fotos ficam guardadas num armazenamento privado e carregam uma vez só, as listas suspensas ganharam o visual do sistema e, a cada versão nova, este aviso mostra o que mudou.",
+      "sections": [
+        {
+          "title": "Perfil do gestor",
+          "type": "novo",
+          "items": [
+            "Tela Perfil no menu do gestor (no celular, em Mais): nome, foto, usuário de login, perfil e data de cadastro.",
+            "O próprio gestor muda o nome e a foto. Usuário de login e perfil continuam só com o admin.",
+            "A foto é cortada no quadrado do meio e reduzida sozinha antes de ser enviada."
+          ]
+        },
+        {
+          "title": "Aviso de versão nova",
+          "type": "novo",
+          "items": [
+            "Ao entrar depois de uma atualização, aparece este aviso com o que foi implementado, melhorado e ajustado. Ele aparece uma vez por versão."
+          ]
+        },
+        {
+          "title": "Fotos e visual",
+          "type": "melhoria",
+          "items": [
+            "As fotos ficam num armazenamento privado: nada é público, e a foto só aparece dentro do sistema, para quem entrou.",
+            "A foto carrega uma vez e fica guardada no aparelho até ser trocada, sem gastar internet a cada abertura.",
+            "Listas suspensas (categorias, itens, filtros) com o visual do sistema, nos modos claro e escuro.",
+            "Barras de rolagem finas e arredondadas, nas cores do sistema, no lugar das cinzas do navegador."
+          ]
+        },
+        {
+          "title": "Registro e segurança",
+          "type": "ajuste",
+          "items": [
+            "Registro da API (admins): mostra quando alguém insere, troca ou remove a foto e quando muda o nome. Abrir a foto não é registrado, e a imagem nunca fica no registro.",
+            "Consulta SQL: o resultado das consultas aparece só na tela e não fica guardado em lugar nenhum.",
+            "Registro da API: o que tem mais de 90 dias é apagado todo dia de madrugada, automaticamente, e o espaço é reaproveitado, então o banco não cresce com o tempo."
+          ]
+        }
+      ]
+    },
+    {
+      "version": "0.1.2",
+      "date": "2026-10-18",
+      "title": "Registro da API, documentação técnica, token de acesso e menu no topo",
+      "summary": "Os admins ganharam o registro de tudo o que é feito no sistema e uma documentação técnica completa. Toda chamada ao sistema passou a exigir um token de acesso além do login, e no computador o menu pode ficar no topo da tela.",
+      "sections": [
+        {
+          "title": "Segurança",
+          "items": [
+            "Toda consulta e toda ação do sistema agora exigem, além do login, um token de acesso entregue só à tela do sistema depois do código do autenticador. Ele vale enquanto a sessão estiver aberta e deixa de valer ao sair.",
+            "Registro da API em /partner, só para admins: cada ação feita no sistema (criar, editar, excluir, importar, entrar, sair) e cada erro ou acesso negado, com data e hora, quem fez, o que foi enviado e o que o servidor respondeu. Senhas e códigos não aparecem. Os registros ficam guardados por 90 dias."
+          ]
+        },
+        {
+          "title": "Para admins",
+          "items": [
+            "Consulta SQL: tela nova no menu para ler qualquer dado do banco escrevendo SQL (ex.: SELECT * FROM items WHERE cost >= 3), com lista de tabelas, exemplos, histórico e exportação em CSV. Só leitura: o próprio banco recusa alterações, e senhas, segredos e sessões ficam de fora.",
+            "Documentação técnica em /duvidasdev: arquitetura, tipo de API, autenticação, segurança, banco e publicação, com a lista de APIs sempre em dia.",
+            "Em Configurações → Ajuda, os admins veem também os links para a Documentação técnica e o Registro da API."
+          ]
+        },
+        {
+          "title": "Tela",
+          "items": [
+            "Itens em pacote: no cadastro, a opção \"Este item é um pacote com várias unidades\" libera o campo de quantas unidades tem 1 pacote. O estoque continua contado em pacotes e o sistema mostra junto o total em unidades, no Estoque e ao registrar movimentações. As planilhas ganharam a coluna Unidades por pacote.",
+            "Código ou senha errados: a espera para tentar de novo agora conta ao vivo, segundo a segundo, na mensagem e no botão, que volta sozinho quando o tempo acaba.",
+            "No computador, Configurações ganhou a escolha Menu: na lateral (como sempre) ou no topo, em forma de cabeçalho, com o nome do sistema à esquerda e as telas à direita. Se os nomes não couberem na tela, ficam só os ícones. No celular continua a barra de baixo.",
+            "Cliques mais rápidos: as telas Estoque, Previsão e Estimativas abrem cerca de 3 vezes mais depressa, e lançar entrada, saída ou contagem ficou cerca de 3 vezes mais rápido. Ao trocar de tela, a estrutura dela aparece na hora, ainda vazia, e os dados entram em seguida com uma transição suave; uma barra fina aparece no topo se demorar.",
+            "O botão Voltar ao sistema das páginas de ajuda traz direto de volta a Configurações, mesmo depois de navegar entre as versões.",
+            "Fora da produção, o selo Ambiente de teste aparece também nas páginas de ajuda, e em toda página nova."
+          ]
+        }
+      ]
+    },
+    {
+      "version": "0.1.1",
+      "date": "2026-10-18",
+      "title": "Itens removidos guardados, mais segurança no login e o sistema no celular",
+      "summary": "Excluir um item não apaga mais nada: o item, as compras e todo o histórico ficam guardados, e só os admins veem esses dados. O código do autenticador ficou mais protegido, gestores podem pedir usuários novos, o celular ganhou uma barra de abas de aplicativo e chegou o primeiro app Android.",
+      "sections": [
+        {
+          "title": "Itens removidos",
+          "items": [
+            "Excluir um item (só admin) não apaga mais os dados: antes de sair do estoque, o item vai para os removidos com tudo o que tinha na hora (SKU, nome, categoria, unidade, saldo, mínimo, custo, lote, prazo, fornecedor), junto com quem excluiu e quando.",
+            "As compras do item (quantidade, preço pago, total e fornecedor) e o histórico completo (compras, saídas e contagens) ficam guardados e ligados ao item removido.",
+            "Nova tela Itens removidos, só para admins: lista o que foi excluído e, em Ver histórico, mostra os dados do item, as compras com o total gasto e todas as movimentações. Gestores não veem os itens removidos nem as compras deles.",
+            "O Histórico de compras dos itens do estoque continua aberto para todos, como antes.",
+            "O SKU de um item excluído fica livre para cadastrar um item novo.",
+            "No banco, os dados ficam nas tabelas removed_items, removed_items_purchases e removed_items_history."
+          ]
+        },
+        {
+          "title": "Segurança no login",
+          "items": [
+            "Código do autenticador errado gera espera crescente: 10 segundos, depois 100 segundos, depois cerca de 17 minutos. No 4º erro seguido o acesso é bloqueado até um admin liberar em Usuários.",
+            "Acertar a senha não zera mais as tentativas de código: só um código certo zera.",
+            "O mesmo código não entra duas vezes, nem em dois aparelhos ao mesmo tempo.",
+            "Na internet (https), o cookie da sessão só trafega criptografado."
+          ]
+        },
+        {
+          "title": "Pedido de novo usuário",
+          "items": [
+            "Gestor ganhou a tela Solicitar usuário: nome, usuário sugerido, perfil e uma observação para o admin. A resposta (aprovada ou recusada, com o recado) aparece na mesma tela.",
+            "Admin vê um sino ao lado do nome do sistema, destacado e com o número de pedidos aguardando. Ao aprovar, confere os dados, define a senha inicial e o usuário é criado na hora."
+          ]
+        },
+        {
+          "title": "Celular e app Android",
+          "items": [
+            "No celular, o menu lateral virou uma barra de abas embaixo (Estoque, Movimentar, Estimativa, Previsão e Mais), como em aplicativo. Em Mais ficam as outras telas, o modo de cor e o Sair.",
+            "Primeiro app Android (APK de teste): abre o mesmo sistema, com o mesmo login, ícone e abertura da GesToque e uma tela própria para quando falta internet. Novidades do sistema aparecem no app sem instalar de novo."
+          ]
+        },
+        {
+          "title": "Ajuda e ambiente de teste",
+          "items": [
+            "Central de dúvidas: manual por assunto, com telas de exemplo animadas mostrando o passo a passo, exemplos e perguntas frequentes.",
+            "Em Configurações, a parte Ajuda leva à Central de dúvidas e às Novidades da versão, com o botão Voltar ao sistema para retornar.",
+            "Ambiente de teste separado, com banco próprio. Fora da produção a tela mostra o selo Ambiente de teste, para ninguém confundir com o sistema da loja."
+          ]
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "date": "2026-10-15",
+      "title": "Primeira versão de demonstração",
+      "summary": "O sistema de gestão da GesToque: estoque, movimentações, estimativa de uso por dia da semana, previsão de compra em faturas mensais e histórico de preços, com login protegido por app autenticador.",
+      "sections": [
+        {
+          "title": "Estoque",
+          "items": [
+            "Cadastro de itens com SKU, categoria, unidade, estoque mínimo, custo, lote de compra, prazo de entrega e fornecedor.",
+            "Cada item mostra quanto sai por dia e por quantos dias o saldo atual dura.",
+            "Situação de cada item: em dia, abaixo do mínimo ou sem estoque.",
+            "Busca por nome, SKU ou fornecedor e filtro por categoria."
+          ]
+        },
+        {
+          "title": "Movimentações",
+          "items": [
+            "Três tipos: entrada (compra), saída (uso do dia) e contagem (o que há na prateleira; o sistema registra a diferença).",
+            "O saldo do item é atualizado na hora, e cada movimentação guarda o saldo depois dela e quem registrou.",
+            "Saída maior que o estoque é recusada."
+          ]
+        },
+        {
+          "title": "Importar e exportar planilhas",
+          "items": [
+            "Excel (.xlsx) e CSV, tanto da carga de estoque quanto das movimentações.",
+            "Na exportação de movimentações dá para escolher os tipos (saídas, entradas, contagens) e o período.",
+            "Toda importação passa por uma conferência antes de gravar: mostra o que será criado, atualizado e quais linhas têm erro.",
+            "O SKU identifica cada linha. Linhas de movimentação que já existem no sistema são ignoradas, então reimportar o mesmo arquivo não duplica nada.",
+            "Movimentações antigas podem entrar só como histórico, sem mexer no saldo de hoje."
+          ]
+        },
+        {
+          "title": "Estimativa de uso",
+          "items": [
+            "O sistema aprende pelas saídas quanto cada item gasta em cada dia da semana e nos feriados (nacionais e Carnaval).",
+            "As próximas 8 semanas aparecem divididas em segunda a sexta e fim de semana, com o valor automático de cada período.",
+            "Quando você sabe de algo que o histórico não mostra, digita a sua estimativa para o período. Ela passa a valer nas faturas, e a tela mostra o automático ao lado.",
+            "Uma chave lista só os itens com estimativa manual, de todos os itens de uma vez."
+          ]
+        },
+        {
+          "title": "Previsão de compra",
+          "items": [
+            "Uma fatura por mês, como fatura de cartão: os meses passados mostram o que foi comprado, o mês atual fica aberto e os próximos são previstos.",
+            "Cada linha mostra uso por dia, estoque no início do mês, consumo previsto, quanto comprar, custo e até quando pedir, considerando o prazo de entrega.",
+            "O botão Registrar compra já lança a entrada com a quantidade e o custo sugeridos.",
+            "A fatura pode ser exportada em CSV."
+          ]
+        },
+        {
+          "title": "Histórico de compras",
+          "items": [
+            "Cada entrada guarda o preço pago e o fornecedor daquele dia. Mudar o custo do item depois não altera o histórico.",
+            "Mostra quanto o preço subiu ou caiu em relação à compra anterior do mesmo item.",
+            "Por item: última compra, menor e maior preço e preço médio pago."
+          ]
+        },
+        {
+          "title": "Alerta de estoque mínimo",
+          "items": [
+            "Ao entrar e depois a cada 3 horas, o sistema avisa quais itens estão no mínimo ou abaixo dele.",
+            "A lista é expansível, com atalhos para conferir o estoque (contagem) ou registrar a compra.",
+            "O alerta espera se houver uma janela aberta, para não atrapalhar uma edição."
+          ]
+        },
+        {
+          "title": "Acesso e segurança",
+          "items": [
+            "Login com usuário e senha mais o código de um app autenticador (Google Authenticator, Microsoft Authenticator ou Authy). No primeiro acesso o sistema mostra o QR code.",
+            "Perfis: admin ajusta tudo, inclusive métricas e usuários; gestor cuida do estoque, movimentações e compras.",
+            "A sessão termina após 45 minutos sem uso. Em Configurações, cada pessoa pode ligar Manter ativo.",
+            "Um novo login do mesmo usuário no mesmo navegador encerra a sessão anterior.",
+            "Cinco tentativas erradas seguidas bloqueiam o login por 15 minutos."
+          ]
+        },
+        {
+          "title": "Aparência",
+          "items": [
+            "Dois modos: claro e fosco escuro. A troca fica no login e na lateral.",
+            "Menu lateral recolhível, só com ícones.",
+            "Funciona no celular: a lateral vira uma faixa no topo."
+          ]
+        }
+      ],
+      "guides": [
+        {
+          "title": "Como a fatura do mês é calculada",
+          "steps": [
+            "Pelas saídas da janela de análise (90 dias, ajustável em Métricas), o sistema calcula o uso típico de cada dia da semana e dos feriados.",
+            "Consumo do mês = soma do uso previsto de cada dia × peso do mês × crescimento acumulado. Onde há estimativa manual, ela substitui o automático.",
+            "Comprar = consumo do mês + folga de segurança − estoque no início do mês. A folga é o maior valor entre os dias de segurança e o estoque mínimo do item.",
+            "O resultado sobe para o próximo múltiplo do lote de compra e é multiplicado pelo custo do item."
+          ]
+        },
+        {
+          "title": "Primeiros passos na loja",
+          "steps": [
+            "Cadastre os itens um a um ou importe uma planilha. Para ter o modelo de colunas, exporte a carga de estoque.",
+            "Registre as saídas do dia, ou importe as movimentações. Se tiver o histórico dos últimos meses, importe só como histórico para a previsão começar certa.",
+            "Confira as faturas em Previsão de compra e registre cada compra pelo botão da linha.",
+            "Ajuste em Estimativa de uso os períodos que você sabe que serão diferentes, como feriados e eventos."
+          ]
+        }
+      ]
+    }
+  ]
+}

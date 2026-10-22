@@ -1,0 +1,41 @@
+/* Documentação técnica (/duvidasdev): usa a estrutura do /duvidas (duvidas.css) e acrescenta tabelas e código. */
+
+/* Tabelas e blocos de código rolam dentro do quadro, sem alargar a página no celular. */
+.topico, .topico > * { min-width: 0; }
+.topico h3 { font-size: 1.2rem; margin-top: 4px; }
+.topico h3 small { color: var(--suave); font: 500 0.9rem var(--corpo); }
+.topico code, .topico pre { font-family: ui-monospace, Consolas, monospace; }
+.topico :not(pre) > code { font-size: 0.86em; background: var(--tinta-leve); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
+.topico pre {
+  margin: 0;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--tinta-leve);
+  border: 1px solid var(--linha);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  overflow-x: auto;
+}
+.topico table td, .topico table th { vertical-align: top; }
+.topico table td:first-child { white-space: nowrap; }
+.tabela-apis td:nth-child(2) code { white-space: nowrap; overflow-wrap: normal; }
+.passos { margin: 0; padding-left: 22px; display: grid; gap: 8px; max-width: 80ch; }
+
+.metodo, .nivel { display: inline-block; padding: 2px 9px; border-radius: 999px; font: 700 0.75rem/1.5 var(--corpo); letter-spacing: 0.02em; }
+.metodo { background: var(--tinta-leve); color: var(--texto); }
+.metodo.get { background: #d8efe0; color: #14532d; }
+.metodo.post { background: #dbe7fb; color: #1e3a8a; }
+.metodo.put, .metodo.patch { background: #fbeccf; color: #7a4a00; }
+.metodo.delete { background: #f9d9d9; color: #8a1c1c; }
+.nivel.aberto { background: var(--tinta-leve); color: var(--texto); }
+.nivel.logado { background: var(--destaque); color: #000; }
+.nivel.admin { background: var(--acao-bg); color: var(--acao-fg); }
+
+.dev-bloqueio { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.dev-bloqueio > .icone { width: 40px; height: 40px; color: var(--link); }
+.dev-bloqueio > div { flex: 1 1 280px; }
+.dev-bloqueio h2 { font-size: 1.5rem; }
+
+@media (max-width: 900px) {
+  .topico table td:first-child { white-space: normal; }
+}

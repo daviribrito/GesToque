@@ -1,0 +1,20 @@
+{
+  "name": "gestoque-mobile",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Aplicativo Android do sistema GesToque (Capacitor). Abre o sistema publicado na Vercel.",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "endereco": "node scripts/definir-endereco.js",
+    "sync": "cap sync android",
+    "icones": "capacitor-assets generate --android --iconBackgroundColor \"#7fd6c6\" --iconBackgroundColorDark \"#1e3a36\" --splashBackgroundColor \"#7fd6c6\" --splashBackgroundColorDark \"#0f1514\""
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/core": "^8.5.3"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.5.3"
+  }
+}

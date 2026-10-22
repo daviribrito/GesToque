@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Novidades do sistema</title>
+  <script src="/js/tema.js"></script>
+  <link rel="icon" href="/img/logo-gestoque.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/novidades.css">
+</head>
+<body>
+  <div class="cenario" aria-hidden="true"></div>
+  <main class="novidades">
+    <header class="novidades-topo vidro">
+      <img class="novidades-logo" src="/img/logo-gestoque.svg" alt="GesToque">
+      <div>
+        <h1>Novidades do sistema</h1>
+        <p>GesToque: o que o sistema faz e o que mudou em cada versão.</p>
+      </div>
+      <div class="novidades-acoes">
+        <span class="versao" id="versao-atual"></span>
+        <div id="tema"></div>
+        <a class="botao" href="/" data-so-deslogado>Entrar no sistema</a>
+      </div>
+    </header>
+    <div class="novidades-corpo">
+      <nav class="novidades-indice vidro" aria-label="Versões">
+        <h2>Versões</h2>
+        <ol id="indice"></ol>
+      </nav>
+      <div id="versoes" class="novidades-versoes">
+        <section class="vidro painel"><p>Carregando as novidades...</p></section>
+      </div>
+    </div>
+  </main>
+  <script src="/js/ambiente.js" defer></script>
+  <script src="/js/novidades.js" defer></script>
+  <script src="/js/voltar.js" defer></script>
+</body>
+</html>

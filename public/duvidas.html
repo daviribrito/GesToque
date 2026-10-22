@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Central de dúvidas</title>
+  <script src="/js/tema.js"></script>
+  <link rel="icon" href="/img/logo-gestoque.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/duvidas.css">
+</head>
+<body>
+  <div class="cenario" aria-hidden="true"></div>
+
+  <main class="manual">
+    <header class="manual-topo vidro">
+      <img class="manual-mascote" src="/img/caixa.svg" alt="">
+      <div class="manual-titulo">
+        <h1>Central de dúvidas</h1>
+        <p>Como usar o sistema da GesToque, passo a passo, com as telas de verdade.</p>
+        <label class="busca">
+          <span class="so-leitor">Buscar no manual</span>
+          <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input type="search" id="busca" placeholder="Busque uma dúvida: saída, senha, previsão, planilha..." autocomplete="off">
+        </label>
+        <p class="busca-resultado" id="busca-resultado" role="status" aria-live="polite"></p>
+      </div>
+      <div class="manual-acoes" id="tema"></div>
+    </header>
+
+    <div class="manual-corpo">
+      <nav class="manual-indice vidro" aria-label="Assuntos">
+        <h2>Assuntos</h2>
+        <ol id="indice"></ol>
+      </nav>
+
+      <div class="manual-conteudo" id="conteudo">
+
+        <!-- Dúvidas mais comuns -->
+        <section class="vidro painel topico" id="comuns" data-titulo="Dúvidas mais comuns" data-icone="ajuda">
+          <h2>Dúvidas mais comuns</h2>
+          <p class="intro">As perguntas que mais aparecem na loja. Toque em uma para ir direto à resposta.</p>
+          <div class="atalhos" id="atalhos"></div>
+        </section>
+
+        <!-- Entrar -->
+        <section class="vidro painel topico" id="entrar" data-titulo="Entrar no sistema" data-icone="chave">
+          <h2>Entrar no sistema</h2>
+          <p class="intro">O acesso tem duas etapas: usuário e senha, e depois o código de 6 dígitos do app autenticador do seu celular (Google Authenticator, Microsoft Authenticator ou Authy). O código muda a cada 30 segundos.</p>
+
+          <div class="demo" data-demo="entrar">
+            <div class="demo-tela" role="img" aria-label="Demonstração animada da tela de entrada">
+              <div class="m-login">
+                <div class="m-palco"><img src="/img/caixa.svg" alt=""></div>
+                <div class="m-form">
+                  <div data-etapa="senha">
+                    <strong class="m-h">GesToque</strong>
+                    <span class="m-rotulo">Usuário</span><span class="m-input" data-alvo="usuario"></span>
+                    <span class="m-rotulo">Senha</span><span class="m-input" data-alvo="senha"></span>
+                    <span class="botao m-cheio" data-alvo="entrar">Entrar</span>
+                  </div>
+                  <div data-etapa="codigo" hidden>
+                    <strong class="m-h">Código do autenticador</strong>
+                    <span class="m-sub">Digite o código de 6 dígitos do seu app autenticador.</span>
+                    <span class="m-input m-codigo" data-alvo="codigo"></span>
+                    <span class="botao m-cheio" data-alvo="confirmar">Confirmar código</span>
+                  </div>
+                  <div data-etapa="dentro" hidden>
+                    <strong class="m-h">Pronto, você entrou</strong>
+                    <span class="m-sub">O sistema abre na tela Estoque.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="exemplo"><strong>Primeiro acesso</strong> Na primeira vez, em vez do pedido de código aparece um QR code. Abra o app autenticador, toque em "+", leia o QR code e digite o código que ele mostrar em "Ativar e entrar". Depois disso, é só o código.</div>
+
+          <div class="faq">
+            <details id="faq-codigo-errado"><summary>Digitei o código e deu "Código incorreto". E agora?</summary>
+              <p>Confira se o horário do celular está no automático (o código depende do relógio) e use o código que está aparecendo agora no app, não um antigo. Por segurança, cada erro aumenta a espera para a próxima tentativa: <strong>10 segundos</strong>, depois <strong>100 segundos</strong>, depois <strong>cerca de 17 minutos</strong>. No 4º erro seguido o acesso é bloqueado até um admin liberar. Durante a espera, a mensagem e o botão mostram o tempo que falta, contando ao vivo; quando zera, o botão volta sozinho.</p></details>
+            <details id="faq-bloqueado"><summary>Apareceu "Acesso bloqueado por erros seguidos no código"</summary>
+              <p>Peça a um admin. Ele abre <strong>Usuários</strong>, toca em Editar na sua linha e marca <strong>Liberar o acesso</strong>. Se o bloqueado for o único admin, rode o <code>configurar-admin.cmd</code> no computador do sistema.</p></details>
+            <details id="faq-celular-perdido"><summary>Troquei ou perdi o celular do autenticador</summary>
+              <p>Um admin abre <strong>Usuários</strong>, edita o seu usuário e marca <strong>Refazer o cadastro do autenticador</strong>. No próximo login aparece um QR code novo para ler com o celular novo.</p></details>
+            <details id="faq-senha"><summary>Esqueci a senha ou quero trocar</summary>
+              <p>Para trocar, vá em <strong>Configurações &gt; Trocar senha</strong> (mínimo de 10 caracteres). Se esqueceu, peça a um admin: em Usuários ele define uma senha nova para você. Cinco senhas erradas seguidas bloqueiam o login por 15 minutos.</p></details>
+            <details id="faq-saiu-sozinho"><summary>O sistema me tirou sozinho</summary>
+              <p>Depois de <strong>45 minutos sem uso</strong> a sessão é encerrada, para ninguém usar o seu acesso num computador esquecido aberto. Se preferir ficar conectado, ligue <strong>Manter ativo</strong> em Configurações. Entrar de novo com o mesmo usuário no mesmo navegador também encerra a sessão anterior.</p></details>
+          </div>
+        </section>
+
+        <!-- Estoque -->
+        <section class="vidro painel topico" id="estoque" data-titulo="Estoque e itens" data-icone="estoque">
+          <h2>Estoque e itens</h2>
+          <p class="intro">A tela Estoque mostra tudo o que a loja tem agora. Para cada item: quanto há, a situação, o estoque mínimo, quanto sai por dia e por quantos dias o saldo dura.</p>
+
+          <div class="demo" data-demo="item">
+            <div class="demo-tela" role="img" aria-label="Demonstração animada: adicionar um item">
+              <div class="m-app">
+                <div class="m-cabeca"><strong>Estoque</strong><span class="botao pequeno" data-alvo="novo">Adicionar item</span></div>
+                <table class="m-tabela">
+                  <thead><tr><th>Item</th><th class="num">Em estoque</th><th>Situação</th><th class="num">Dura</th></tr></thead>
+                  <tbody>
+                    <tr><td><b>Base de sorvete baunilha</b><small>SRV-BAU | Bases</small></td><td class="num"><b>29</b> balde</td><td><span class="selo ok">Em dia</span></td><td class="num">11 dias</td></tr>
+                    <tr data-alvo="linha-nova" hidden><td><b data-alvo="nome-tabela"></b><small>CAL-MOR | Caldas</small></td><td class="num"><b>12</b> un</td><td><span class="selo ok">Em dia</span></td><td class="num">-</td></tr>
+                  </tbody>
+                </table>
+                <div class="m-dialogo vidro" data-alvo="dialogo" hidden>
+                  <strong class="m-h">Adicionar item</strong>
+                  <span class="m-rotulo">Nome</span><span class="m-input" data-alvo="nome"></span>
+                  <div class="m-duas">
+                    <div><span class="m-rotulo">SKU</span><span class="m-input" data-alvo="sku"></span></div>
+                    <div><span class="m-rotulo">Quantidade em estoque</span><span class="m-input" data-alvo="qtd"></span></div>
+                  </div>
+                  <div class="m-duas">
+                    <div><span class="m-rotulo">Estoque mínimo</span><span class="m-input" data-alvo="minimo"></span></div>
+                    <div><span class="m-rotulo">Lote de compra</span><span class="m-input">6</span></div>
+                  </div>
+                  <div class="m-rodape"><span class="botao pequeno claro">Cancelar</span><span class="botao pequeno" data-alvo="salvar">Adicionar item</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="exemplo"><strong>Como ler a situação</strong> <span class="selo ok">Em dia</span> acima do mínimo; <span class="selo baixo">Abaixo do mínimo</span> chegou no mínimo ou passou dele; <span class="selo zerado">Sem estoque</span> acabou. "Dura 11 dias" quer dizer: no ritmo de saída dos últimos 90 dias, o saldo atual acaba em 11 dias.</div>
+
+          <div class="faq">
+            <details id="faq-sku"><summary>O que é o SKU?</summary>
+              <p>É o código único do item, como <code>SRV-BAU</code>. Ele não pode se repetir e é por ele que as planilhas de importação reconhecem cada item. Escolha algo curto e fácil de lembrar.</p></details>
+            <details id="faq-lote"><summary>Para que serve o lote de compra?</summary>
+              <p>É de quanto em quanto o fornecedor vende. Se a calda vem em caixa com 6, coloque 6: a compra sugerida sempre sobe para um múltiplo de 6 (6, 12, 18...).</p></details>
+            <details id="faq-pacote"><summary>O item vem em pacote com várias unidades (ex.: copos)</summary>
+              <p>No cadastro do item, marque <strong>Este item é um pacote com várias unidades</strong> e informe quantas unidades tem 1 pacote (ex.: 100). A partir daí o estoque, o mínimo, o custo e as movimentações são contados <strong>em pacotes</strong>, e o sistema mostra junto o total em unidades: "3 pct, 300 unidades". Ao registrar uma movimentação, ele também mostra quantas unidades você está lançando. Para deixar de ser pacote, é só desmarcar.</p></details>
+            <details id="faq-uso-dia"><summary>O "Uso por dia" está vazio ou estranho</summary>
+              <p>Ele é calculado pelas <strong>saídas registradas</strong>. Item novo, ou sem saídas, fica com "-". Quanto mais certinho o registro das saídas, mais certa a conta.</p></details>
+            <details id="faq-excluir-item"><summary>Como tiro um item que não uso mais?</summary>
+              <p>Edite o item e desmarque <strong>Item ativo</strong>: ele sai da previsão de compra e fica apagado na lista, mas o histórico continua. Excluir só um admin pode, pelo botão Excluir item: o item sai do estoque, mas ele, as compras e todo o histórico (saídas e contagens) ficam guardados e aparecem em <strong>Itens removidos</strong>, uma tela só para admins, com a data e quem excluiu. O SKU fica livre para um item novo.</p></details>
+          </div>
+        </section>
+
+        <!-- Movimentações -->
+        <section class="vidro painel topico" id="movimentacoes" data-titulo="Saídas, entradas e contagens" data-icone="movimentacoes">
+          <h2>Saídas, entradas e contagens</h2>
+          <p class="intro">Toda mudança no estoque é uma movimentação. São três tipos: <strong>Saída</strong> (o que foi usado), <strong>Entrada</strong> (o que chegou de compra) e <strong>Contagem</strong> (o que você contou na prateleira; o sistema acerta a diferença sozinho). O saldo muda na hora.</p>
+
+          <div class="demo" data-demo="saida">
+            <div class="demo-tela" role="img" aria-label="Demonstração animada: registrar uma saída">
+              <div class="m-app">
+                <div class="m-cabeca"><strong>Estoque</strong></div>
+                <table class="m-tabela">
+                  <thead><tr><th>Item</th><th class="num">Em estoque</th><th></th></tr></thead>
+                  <tbody>
+                    <tr><td><b>Base de sorvete baunilha</b><small>SRV-BAU</small></td><td class="num"><b data-alvo="saldo">29</b> balde</td><td class="num"><span class="botao pequeno destaque" data-alvo="mover">Movimentar</span></td></tr>
+                    <tr><td><b>Copo descartável 400 ml</b><small>COP-400</small></td><td class="num"><b>4</b> cx 500</td><td class="num"><span class="botao pequeno destaque">Movimentar</span></td></tr>
+                  </tbody>
+                </table>
+                <div class="m-dialogo vidro" data-alvo="dialogo" hidden>
+                  <strong class="m-h">Registrar movimentação</strong>
+                  <span class="m-rotulo">Item</span><span class="m-input">Base de sorvete baunilha 10 L (SRV-BAU)</span>
+                  <div class="tipos m-tipos">
+                    <span data-alvo="tipo-saida"><span>Saída</span></span><span><span>Entrada</span></span><span><span>Contagem</span></span>
+                  </div>
+                  <span class="m-rotulo">Quantidade</span><span class="m-input" data-alvo="qtd"></span>
+                  <small class="m-ajuda">Hoje: 29 balde.</small>
+                  <div class="m-rodape"><span class="botao pequeno claro">Cancelar</span><span class="botao pequeno" data-alvo="registrar">Registrar</span></div>
+                </div>
+                <div class="m-aviso" data-alvo="aviso" hidden>Movimentação registrada. Saldo: 27 balde</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="exemplo"><strong>Exemplo de contagem</strong> O sistema diz 29 baldes, mas na câmara fria há 27. Escolha <strong>Contagem</strong> e digite <strong>27</strong> (o que você contou, não a diferença). O sistema registra −2 e o saldo passa a 27.</div>
+
+          <div class="faq">
+            <details id="faq-errei-saida"><summary>Registrei uma saída errada. Como corrijo?</summary>
+              <p>As movimentações não são apagadas, para o histórico ser confiável. Faça uma <strong>Contagem</strong> com a quantidade certa que existe agora: o sistema acerta a diferença. Se o erro foi pequeno e você sabe o valor, também pode lançar uma Entrada com a sobra, com uma observação explicando.</p></details>
+            <details id="faq-saida-maior"><summary>Apareceu "Saída maior que o estoque"</summary>
+              <p>O sistema não deixa o saldo ficar negativo. Provavelmente faltou registrar alguma entrada. Registre a entrada que chegou (ou faça uma contagem) e depois a saída.</p></details>
+            <details id="faq-contagem-diferenca"><summary>Por que o saldo do sistema não bate com a prateleira?</summary>
+              <p>Normalmente é saída ou entrada que ficou sem registrar, ou perda (produto vencido, derramado). Faça uma <strong>Contagem</strong> para acertar e, daí em diante, registre as saídas todos os dias: é delas que vem toda a previsão.</p></details>
+            <details id="faq-custo-entrada"><summary>Na entrada aparece "Atualizar o custo do item"</summary>
+              <p>Marcado, o preço que você pagou nesta compra vira o custo do item no cadastro. O preço desta compra fica guardado no Histórico de compras de qualquer jeito.</p></details>
+          </div>
+        </section>
+
+        <!-- Planilhas -->
+        <section class="vidro painel topico" id="planilhas" data-titulo="Importar e exportar planilhas" data-icone="planilha">
+          <h2>Importar e exportar planilhas</h2>
+          <p class="intro">Dá para levar e trazer dados em Excel (.xlsx) ou CSV, tanto a <strong>carga de estoque</strong> (os itens) quanto as <strong>movimentações</strong>. Os botões ficam nas telas Estoque e Movimentações.</p>
+
+          <div class="demo" data-demo="importar">
+            <div class="demo-tela" role="img" aria-label="Demonstração animada: importar uma planilha">
+              <div class="m-app">
+                <div class="m-cabeca"><strong>Estoque</strong><span><span class="botao pequeno claro" data-alvo="importar">Importar</span> <span class="botao pequeno claro">Exportar</span></span></div>
+                <div class="m-dialogo vidro" data-alvo="dialogo" hidden>
+                  <strong class="m-h">Importar planilha</strong>
+                  <div class="tipos m-tipos m-tipos-2"><span class="on"><span>Carga de estoque</span></span><span><span>Movimentações</span></span></div>
+                  <span class="m-rotulo">Arquivo (.xlsx ou .csv)</span><span class="m-input" data-alvo="arquivo"></span>
+                  <div class="m-resumo" data-alvo="resumo" hidden><span><small>Novos</small><b>3</b></span><span><small>Atualizados</small><b>5</b></span><span><small>Sem mudança</small><b>12</b></span><span><small>Ajustes de saldo</small><b>2</b></span></div>
+                  <div class="m-rodape"><span class="botao pequeno claro">Cancelar</span><span class="botao pequeno" data-alvo="botao">Conferir planilha</span></div>
+                </div>
+                <div class="m-aviso" data-alvo="aviso" hidden>Planilha importada</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="exemplo"><strong>Dica do modelo</strong> Para ter a planilha com as colunas certas, exporte primeiro e edite o arquivo exportado. Na importação o sistema sempre <strong>confere antes de gravar</strong> e mostra o que vai mudar e quais linhas têm erro.</div>
+
+          <div class="faq">
+            <details id="faq-colunas"><summary>Quais colunas a planilha precisa ter?</summary>
+              <p><strong>Carga de estoque:</strong> SKU (obrigatória), Nome, Categoria, Unidade, Quantidade, Estoque mínimo, Custo unitário, Lote de compra, Unidades por pacote (vazio = item comum; 0 tira o pacote), Prazo de entrega (dias), Fornecedor, Ativo. <strong>Movimentações:</strong> Data, SKU, Tipo (Entrada, Saída ou Contagem), Quantidade, Custo unitário e Observação.</p></details>
+            <details id="faq-duplicar"><summary>Se eu importar o mesmo arquivo duas vezes, duplica?</summary>
+              <p>Não. Na planilha de movimentações, linhas iguais a uma que já existe (mesmo item, tipo, data e quantidade) aparecem como "Já no sistema" e são ignoradas.</p></details>
+            <details id="faq-historico-antigo"><summary>Quero lançar meses antigos sem mexer no saldo de hoje</summary>
+              <p>Na importação de movimentações, desmarque <strong>Atualizar o saldo do estoque</strong>. As saídas entram só como histórico: a previsão aprende o ritmo da loja e o saldo atual fica como está.</p></details>
+            <details id="faq-exportar-app"><summary>No app do celular, exportar não baixa o arquivo</summary>
+              <p>O navegador interno do app pode não fazer o download. Exporte pelo computador ou pelo navegador do celular (Chrome) entrando no mesmo endereço do sistema.</p></details>
+          </div>
+        </section>
+
+        <!-- Estimativa -->
+        <section class="vidro painel topico" id="estimativa" data-titulo="Estimativa de uso" data-icone="estimativas">
+          <h2>Estimativa de uso</h2>
+          <p class="intro">O sistema aprende pelas saídas quanto cada item gasta em <strong>cada dia da semana</strong> e nos <strong>feriados</strong>. As próximas 8 semanas aparecem divididas em "segunda a sexta" e "fim de semana". Quando você sabe de algo que o histórico não mostra (um evento, uma promoção), digita a sua estimativa e ela passa a valer na previsão de compra.</p>
+
+          <div class="demo" data-demo="estimativa">
+            <div class="demo-tela" role="img" aria-label="Demonstração animada: ajustar a estimativa de um fim de semana">
+              <div class="m-app">
+                <div class="m-cabeca"><strong>Estimativa de uso</strong><small>Copo descartável 400 ml</small></div>
+                <table class="m-tabela">
+                  <thead><tr><th>Período</th><th class="num">Automático</th><th>Sua estimativa</th><th class="num">Vale</th></tr></thead>
+                  <tbody>
+                    <tr><td><b>Segunda a sexta</b><small>20/10 a 24/10</small></td><td class="num">35 cx</td><td><span class="m-input m-curto">35</span></td><td class="num"><b>35</b> cx</td></tr>
+                    <tr><td><b>Fim de semana</b><small>25/10 a 26/10</small></td><td class="num">50 cx</td><td><span class="m-input m-curto" data-alvo="campo">50</span></td><td class="num"><b data-alvo="vale">50</b> cx<small data-alvo="dif" hidden>+10 sobre o automático</small></td></tr>
+                  </tbody>
+                </table>
+                <div class="m-rodape"><span class="botao pequeno" data-alvo="salvar">Salvar estimativa</span></div>
+                <div class="m-aviso" data-alvo="aviso" hidden>Estimativa salva</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="exemplo"><strong>Exemplo</strong> O sistema calculou 50 caixas de copo para o fim de semana, mas vai ter um evento no shopping. Você digita 60 e salva: a previsão de compra passa a usar 60 e mostra "automático 50" ao lado, para você saber o que foi ajuste seu.</div>
+
+          <div class="faq">
+            <details id="faq-voltar-automatico"><summary>Como desfaço uma estimativa minha?</summary>
+              <p>No mesmo período, toque em <strong>Voltar ao automático</strong>. A chave <strong>Só itens com estimativa manual</strong> lista todas as estimativas digitadas, de todos os itens, para revisar de uma vez.</p></details>
+            <details id="faq-feriado"><summary>Como o sistema trata os feriados?</summary>
+              <p>Ele conhece os feriados nacionais e o Carnaval. O uso em feriado vem dos feriados que já passaram no histórico; enquanto não houver nenhum, vale a média de sábado e domingo.</p></details>
+            <details id="faq-periodo-andamento"><summary>Ajustei um período que já começou. Como ele conta?</summary>
+              <p>A estimativa vale para o período inteiro: o sistema desconta o que já saiu nos dias anteriores e reparte o resto pelos dias que faltam.</p></details>
+          </div>
+        </section>
+
+        <!-- Previsão -->
+        <section class="vidro painel topico" id="previsao" data-titulo="Previsão de compra" data-icone="previsao">
+          <h2>Previsão de compra</h2>
+          <p class="intro">Funciona como fatura de cartão: <strong>uma fatura por mês</strong>. Os meses passados mostram o que foi comprado, o mês atual fica <strong>aberto</strong> e os próximos são <strong>previstos</strong>. Cada linha diz quanto comprar, quanto custa e até quando pedir, já contando o prazo de entrega do fornecedor.</p>
+
+          <div class="demo" data-demo="previsao">
+            <div class="demo-tela" role="img" aria-label="Demonstração animada: registrar a compra de uma fatura">
+              <div class="m-app">
+                <div class="m-meses">
+                  <span>set 26<small>R$ 2.104,40</small></span>
+                  <span class="on" data-alvo="mes">out 26<small>R$ 1.388,00</small></span>
+                  <span>nov 26<small>R$ 2.276,30</small></span>
+                </div>
+                <div class="m-fatura"><span>Fatura de outubro de 2026 <span class="selo destaque">Aberta</span></span><b data-alvo="total">R$ 1.388,00</b></div>
+                <table class="m-tabela">
+                  <thead><tr><th>Item</th><th class="num">Comprar</th><th class="num">Total</th><th>Pedir até</th><th></th></tr></thead>
+                  <tbody>
+                    <tr data-alvo="linha"><td><b>Base de sorvete baunilha</b><small>Gelatos SP</small></td><td class="num"><b>12</b> balde</td><td class="num">R$ 1.116,00</td><td><span class="selo baixo">Agora</span></td><td class="num"><span class="botao pequeno destaque" data-alvo="comprar">Registrar compra</span></td></tr>
+                    <tr><td><b>Calda de morango</b><small>Doce Lar</small></td><td class="num"><b>6</b> un</td><td class="num">R$ 166,80</td><td>24/10</td><td class="num"><span class="botao pequeno destaque">Registrar compra</span></td></tr>
+                  </tbody>
+                </table>
+                <div class="m-dialogo vidro" data-alvo="dialogo" hidden>
+                  <strong class="m-h">Registrar movimentação</strong>
+                  <div class="tipos m-tipos"><span><span>Saída</span></span><span class="on"><span>Entrada</span></span><span><span>Contagem</span></span></div>
+                  <div class="m-duas">
+                    <div><span class="m-rotulo">Quantidade</span><span class="m-input">12</span></div>
+                    <div><span class="m-rotulo">Custo unitário (R$)</span><span class="m-input">93,00</span></div>
+                  </div>
+                  <small class="m-ajuda">Já vem preenchido com a sugestão da fatura.</small>
+                  <div class="m-rodape"><span class="botao pequeno claro">Cancelar</span><span class="botao pequeno" data-alvo="registrar">Registrar</span></div>
+                </div>
+                <div class="m-aviso" data-alvo="aviso" hidden>Movimentação registrada. Saldo: 39 balde</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="exemplo"><strong>Como a conta é feita</strong> Comprar = consumo previsto do mês + folga de segurança − estoque no início do mês. O resultado sobe para o próximo múltiplo do lote de compra e é multiplicado pelo custo. A folga e o peso de cada mês ficam em <strong>Métricas</strong> (só admin).</div>
+
+          <div class="faq">
+            <details id="faq-previsao-zerada"><summary>A fatura está zerada ou com "Nada a comprar"</summary>
+              <p>Ou o estoque atual cobre o mês, ou ainda não há saídas registradas para o sistema estimar o uso. Registre as saídas do dia a dia (ou importe o histórico) e a previsão aparece.</p></details>
+            <details id="faq-com-estimativa"><summary>O que é "Com estimativa sua" no cabeçalho da fatura?</summary>
+              <p>É quantos itens daquela fatura estão usando uma estimativa que alguém digitou em Estimativa de uso. Na linha do item aparece "automático X" embaixo do consumo previsto, para comparar.</p></details>
+            <details id="faq-pedir-ate"><summary>O que significa "Pedir até"?</summary>
+              <p>É o último dia para fazer o pedido e a mercadoria chegar antes do mês começar, considerando o prazo de entrega do item. "Agora" quer dizer que o prazo já está correndo.</p></details>
+          </div>
+        </section>
+
+        <!-- Histórico de compras -->
+        <section class="vidro painel topico" id="compras" data-titulo="Histórico de compras" data-icone="compras">
+          <h2>Histórico de compras</h2>
+          <p class="intro">Cada entrada guarda o <strong>preço pago</strong> e o <strong>fornecedor</strong> daquele dia. Mudar o custo do item depois não altera o que já foi comprado, então dá para ver como o preço evoluiu.</p>
+          <div class="m-estatico vidro" role="img" aria-label="Exemplo do histórico de compras">
+            <table class="m-tabela">
+              <thead><tr><th>Data</th><th>Item</th><th class="num">Preço pago</th><th>Em relação à anterior</th></tr></thead>
+              <tbody>
+                <tr><td>13/10/26</td><td><b>Base de sorvete baunilha</b></td><td class="num"><b>R$ 93,00</b></td><td><span class="selo zerado">Subiu R$ 3,10 (+3,4%)</span><small>antes R$ 89,90</small></td></tr>
+                <tr><td>02/10/26</td><td><b>Base de sorvete baunilha</b></td><td class="num"><b>R$ 89,90</b></td><td><small>mesmo preço</small></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="faq">
+            <details id="faq-preco-medio"><summary>Como vejo o preço médio de um item?</summary>
+              <p>Filtre pelo item no topo da tela: aparecem a última compra, o menor e o maior preço, o preço médio pago e o custo que está no cadastro hoje.</p></details>
+          </div>
+        </section>
+
+        <!-- Itens removidos -->
+        <section class="vidro painel topico" id="removidos" data-titulo="Itens removidos" data-icone="removidos">
+          <h2>Itens removidos</h2>
+          <p class="intro"><strong>Só admins veem esta tela.</strong> Excluir um item não apaga nada: antes de sair do estoque, ele é guardado com os dados que tinha na hora, junto com as <strong>compras</strong> e o <strong>histórico completo</strong> (saídas e contagens), quem excluiu e quando.</p>
+
+          <div class="demo" data-demo="removido">
+            <div class="demo-tela" role="img" aria-label="Demonstração animada: excluir um item e ver o histórico guardado">
+              <div class="m-app">
+                <div data-etapa="editar">
+                  <div class="m-cabeca"><strong>Editar item</strong><small>Calda de caramelo 1,3 kg</small></div>
+                  <span class="m-rotulo">Nome</span><span class="m-input">Calda de caramelo 1,3 kg</span>
+                  <div class="m-duas"><div><span class="m-rotulo">SKU</span><span class="m-input">CAL-CAR</span></div><div><span class="m-rotulo">Fornecedor</span><span class="m-input">Doce Lar</span></div></div>
+                  <div class="m-rodape m-rodape-separado"><span class="botao pequeno perigo" data-alvo="excluir">Excluir item</span><span><span class="botao pequeno claro">Cancelar</span> <span class="botao pequeno">Salvar alterações</span></span></div>
+                </div>
+                <div data-etapa="lista" hidden>
+                  <div class="m-cabeca"><strong>Itens removidos</strong><span class="selo neutro">Só admin</span></div>
+                  <table class="m-tabela">
+                    <thead><tr><th>Item</th><th class="num">Saldo ao excluir</th><th>Excluído em</th><th></th></tr></thead>
+                    <tbody><tr><td><b>Calda de caramelo 1,3 kg</b><small>CAL-CAR | Caldas</small></td><td class="num">14,5 un</td><td>18/10/26, 10:42<small>por Davi</small></td><td class="num"><span class="botao pequeno claro" data-alvo="historico">Ver histórico</span></td></tr></tbody>
+                  </table>
+                </div>
+                <div class="m-dialogo vidro" data-alvo="detalhe" hidden>
+                  <strong class="m-h">Calda de caramelo 1,3 kg</strong>
+                  <span class="m-sub">Compras (2), total R$ 346,80</span>
+                  <span class="m-linha-alerta"><b>02/10: 6 un a R$ 28,90</b><span>Doce Lar</span></span>
+                  <span class="m-linha-alerta"><b>15/09: 6 un a R$ 28,90</b><span>Doce Lar</span></span>
+                  <span class="m-sub m-espaco">Histórico completo (31): saídas, compras e contagens</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="exemplo"><strong>Exemplo</strong> A loja parou de vender a calda de caramelo e o admin excluiu o item. Ela some do estoque e da previsão, mas em Itens removidos dá para ver quanto havia na hora, quanto foi gasto nela e todas as saídas registradas.</div>
+
+          <div class="faq">
+            <details id="faq-excluir-volta"><summary>Excluí um item sem querer. Dá para voltar?</summary>
+              <p>Ainda não há um botão de restaurar, mas nada se perdeu: os dados, as compras e o histórico estão em Itens removidos. Para voltar a usar, cadastre o item de novo (o SKU dele fica livre) e lance o saldo com uma contagem.</p></details>
+            <details id="faq-excluir-ou-desativar"><summary>Excluir ou desativar: qual usar?</summary>
+              <p>Para um item que pode voltar (sazonal, em falta no fornecedor), <strong>desative</strong> na edição do item: ele sai da previsão e continua na lista, com o histórico no lugar. <strong>Exclua</strong> só o que saiu de vez do cardápio. Gestores podem desativar; excluir é só para admins.</p></details>
+            <details id="faq-onde-removidos"><summary>Onde vejo o que foi excluído e por quem?</summary>
+              <p>No menu do admin, em <strong>Itens removidos</strong> (no celular, dentro de Mais). A lista mostra quando e quem excluiu; Ver histórico abre as compras e todas as movimentações do item.</p></details>
+          </div>
+        </section>
+
+        <!-- Alerta -->
+        <section class="vidro painel topico" id="alerta" data-titulo="Alerta de estoque mínimo" data-icone="alerta">
+          <h2>Alerta de estoque mínimo</h2>
+          <p class="intro">Ao entrar e depois <strong>a cada 3 horas</strong>, o sistema avisa quais itens estão no mínimo ou abaixo. A lista abre item por item, com atalhos para <strong>Conferir estoque</strong> (faz uma contagem) ou <strong>Registrar compra</strong>.</p>
+          <div class="m-estatico m-alerta vidro" role="img" aria-label="Exemplo do alerta de estoque mínimo">
+            <img src="/img/caixa-assustada.svg" alt="">
+            <div><strong class="m-h">Atenção! Tem item acabando</strong><span class="m-sub">2 itens estão no estoque mínimo ou abaixo dele. É necessário comprar esses itens.</span>
+              <span class="m-linha-alerta"><b>Guardanapo</b><span class="selo baixo">2 de 7 pct 1000</span></span>
+              <span class="m-linha-alerta"><b>Calda de chocolate</b><span class="selo zerado">Sem estoque</span></span></div>
+          </div>
+          <div class="faq">
+            <details id="faq-alerta-errado"><summary>O alerta mostra um item que tem estoque</summary>
+              <p>O saldo do sistema está diferente da prateleira. Use <strong>Conferir estoque</strong> no próprio alerta e digite o que você contou.</p></details>
+          </div>
+        </section>
+
+        <!-- Usuários -->
+        <section class="vidro painel topico" id="usuarios" data-titulo="Usuários e acessos" data-icone="usuarios">
+          <h2>Usuários e acessos</h2>
+          <p class="intro">Há dois perfis. <strong>Admin</strong> ajusta tudo, inclusive métricas e usuários, e é o único que pode excluir itens e ver os Itens removidos (com as compras e o histórico deles). <strong>Gestor</strong> cuida do estoque, das movimentações e das compras e pode <strong>pedir</strong> um usuário novo, que um admin aprova.</p>
+
+          <div class="demo" data-demo="solicitacao">
+            <div class="demo-tela" role="img" aria-label="Demonstração animada: gestor pede um usuário e admin cria">
+              <div class="m-app">
+                <div data-etapa="gestor">
+                  <div class="m-cabeca"><strong>Solicitar usuário</strong><span class="selo neutro">Gestor</span></div>
+                  <span class="m-rotulo">Nome completo</span><span class="m-input" data-alvo="nome"></span>
+                  <div class="m-duas"><div><span class="m-rotulo">Usuário sugerido</span><span class="m-input" data-alvo="login"></span></div><div><span class="m-rotulo">Perfil</span><span class="m-input">Gestor</span></div></div>
+                  <div class="m-rodape"><span class="botao pequeno" data-alvo="enviar">Enviar solicitação</span></div>
+                </div>
+                <div data-etapa="admin" hidden>
+                  <div class="m-cabeca"><strong>GesToque</strong><span class="sino com-aviso m-sino" data-alvo="sino"><svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg><span class="contador">1</span></span></div>
+                  <div class="pedido m-pedido" data-alvo="pedido" hidden>
+                    <span class="m-linha-alerta"><b>Maria Silva</b><span class="selo baixo">Aguardando</span></span>
+                    <small>maria.silva | Gestor | pedido por Gestor da loja</small>
+                    <div class="m-rodape"><span class="botao pequeno claro">Recusar</span><span class="botao pequeno" data-alvo="criar">Criar usuário</span></div>
+                  </div>
+                </div>
+                <div class="m-aviso" data-alvo="aviso" hidden></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq">
+            <details id="faq-gestor-criar"><summary>Sou gestor. Como peço acesso para alguém?</summary>
+              <p>Abra <strong>Solicitar usuário</strong>, preencha nome, usuário sugerido, perfil e uma observação e toque em Enviar solicitação. Você acompanha a resposta (aprovada ou recusada, com o recado do admin) na mesma tela.</p></details>
+            <details id="faq-perfil"><summary>Sou gestor. Onde vejo meus dados, mudo meu nome e minha foto?</summary>
+              <p>Abra <strong>Perfil</strong> no menu (no celular, em Mais). Lá aparecem seu nome, usuário, perfil e a data de cadastro. Para mudar o nome, escreva no campo Nome e toque em <strong>Salvar</strong>. Para a foto, toque em <strong>Adicionar foto</strong> (ou Trocar foto) e escolha uma imagem: o sistema corta o quadrado do meio e deixa leve sozinho. O usuário de login e o perfil só um admin muda; a senha você troca em Configurações.</p></details>
+            <details id="faq-versao-nova"><summary>Apareceu uma janela "Chegou a versão..."</summary>
+              <p>É o aviso de versão nova: depois de cada atualização do sistema, ele mostra uma vez o que foi <strong>implementado</strong> (Novo), <strong>melhorado</strong> (Melhoria) e <strong>ajustado</strong> (Ajuste). Toque em <strong>Entendi</strong> para fechar; ele não aparece de novo nesta versão. Para rever o aviso, abra <strong>Configurações → Ajuda → Ver o aviso desta versão</strong>; o histórico completo fica em <strong>Novidades da versão</strong>.</p></details>
+            <details id="faq-admin-sino"><summary>Sou admin. Onde vejo os pedidos?</summary>
+              <p>No <strong>sino</strong> ao lado do nome "GesToque": ele fica destacado e mostra quantos pedidos aguardam. Em Criar usuário você confere os dados, define a senha inicial e o usuário é criado na hora.</p></details>
+          </div>
+        </section>
+
+        <!-- Configurações e celular -->
+        <section class="vidro painel topico" id="configuracoes" data-titulo="Configurações e celular" data-icone="configuracoes">
+          <h2>Configurações e celular</h2>
+          <p class="intro">Em <strong>Configurações</strong> cada pessoa escolhe se quer <strong>Manter ativo</strong> (não sair depois de 45 minutos parado) e troca a própria senha. Em <strong>Ajuda</strong> ficam os links para esta Central de dúvidas e para as Novidades da versão; o botão "Voltar ao sistema" traz direto de volta a Configurações, mesmo depois de navegar pelas páginas de ajuda. O modo de cor (claro ou fosco escuro) fica nos botões do logo e da lua, e no computador o menu lateral pode ser recolhido pela setinha. Ainda no computador, a parte <strong>Menu</strong> de Configurações deixa o menu <strong>Na lateral</strong> ou <strong>No topo</strong>, como um cabeçalho.</p>
+          <div class="m-estatico m-celular" role="img" aria-label="Como o sistema aparece no celular">
+            <div class="m-fone vidro">
+              <div class="m-fone-topo"><img src="/img/logo-gestoque.svg" alt=""><b>GesToque</b></div>
+              <div class="m-fone-corpo"><span></span><span></span><span></span></div>
+              <div class="m-fone-abas"><i class="on">Estoque</i><i>Movimentar</i><i>Estimativa</i><i>Previsão</i><i>Mais</i></div>
+            </div>
+            <div class="m-fone-texto">
+              <strong class="m-h">No celular</strong>
+              <p>As telas principais ficam na barra embaixo. Em <strong>Mais</strong> estão as outras telas, o modo de cor e o Sair. O app Android abre o mesmo sistema, com o mesmo login.</p>
+            </div>
+          </div>
+          <div class="faq">
+            <details id="faq-menu-topo"><summary>Como deixo o menu em cima, e não na lateral?</summary>
+              <p>Em Configurações, na parte Menu, escolha <strong>No topo</strong>. O nome do sistema fica à esquerda e as telas à direita. Se a tela do computador for estreita para todos os nomes, aparecem só os ícones (passe o mouse para ver o nome) e a tela aberta continua com o nome. A escolha vale para aquele computador; no celular o menu fica sempre na barra de baixo.</p></details>
+            <details id="faq-app"><summary>Preciso atualizar o app quando o sistema muda?</summary>
+              <p>Não. O app abre o sistema da internet, então as novidades aparecem sozinhas. Só é preciso instalar um APK novo quando o próprio app mudar (ícone, nome, tela sem internet).</p></details>
+            <details id="faq-sem-internet"><summary>O app mostrou a caixa assustada "Sem conexão"</summary>
+              <p>O celular está sem internet ou o sinal caiu. Confira o Wi-Fi ou os dados móveis e toque em Tentar de novo. Nada do que já foi registrado se perde: tudo fica no servidor.</p></details>
+          </div>
+        </section>
+
+        <p class="manual-fim">Não achou a sua dúvida? Fale com o admin da loja.</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/ambiente.js" defer></script>
+  <script src="/js/duvidas.js" defer></script>
+  <script src="/js/voltar.js" defer></script>
+</body>
+</html>

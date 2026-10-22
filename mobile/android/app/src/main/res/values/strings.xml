@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">GesToque</string>
+    <string name="title_activity_main">GesToque</string>
+    <string name="package_name">com.gestoque.app</string>
+    <string name="custom_url_scheme">com.gestoque.app</string>
+</resources>

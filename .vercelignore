@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+data
+.tools
+.claude
+*.cmd
+/*.png
+MARCA.md
+mobile
+.github
+scripts
+marca

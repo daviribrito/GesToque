@@ -1,0 +1,256 @@
+<!-- Documentação técnica (/duvidasdev). Só sai pela rota de admin GET /api/dev/documentacao.
+     Cada <section class="topico"> vira um item do índice. A lista de APIs é montada na tela a partir
+     da tabela de rotas (server/app.js) dentro de #lista-apis. Atualize este texto ao mudar a arquitetura. -->
+
+<section class="vidro painel topico" id="visao" data-titulo="Visão geral" data-icone="camadas">
+  <h2>Visão geral</h2>
+  <p class="intro">Sistema web de estoque e previsão de compras da GesToque. Não registra vendas: o consumo vem das saídas lançadas. Uma única aplicação serve a tela e a API, no mesmo endereço.</p>
+  <div class="rolagem"><table>
+    <thead><tr><th>Camada</th><th>Tecnologia</th><th>Onde</th></tr></thead>
+    <tbody>
+      <tr><td>Tela</td><td>SPA em JavaScript puro (sem framework), HTML e CSS próprios. O endereço não muda ao trocar de tela.</td><td><code>public/</code> (<code>js/app.js</code>, <code>css/app.css</code>)</td></tr>
+      <tr><td>Servidor / API</td><td>Node.js 22+ puro, módulo <code>http</code>, sem Express. Uma tabela de rotas.</td><td><code>server/</code></td></tr>
+      <tr><td>Hospedagem</td><td>Vercel: arquivos de <code>public/</code> pela CDN; o resto vai para uma função serverless.</td><td><code>api/index.js</code>, <code>vercel.json</code></td></tr>
+      <tr><td>Banco</td><td>PostgreSQL no Supabase (driver <code>pg</code>), schema <code>gestoque</code>. Sem banco configurado: PGlite (Postgres em arquivo).</td><td><code>server/db.js</code>, <code>data/pglite</code></td></tr>
+      <tr><td>App Android</td><td>Capacitor 8 abrindo o mesmo site; APK gerado pelo GitHub Actions.</td><td><code>mobile/</code></td></tr>
+    </tbody>
+  </table></div>
+  <p>Dependências de produção: <code>pg</code>, <code>@electric-sql/pglite</code>, <code>exceljs</code> (planilhas) e <code>qrcode</code> (QR do autenticador). Criptografia, sessão e TOTP usam só o módulo <code>crypto</code> do Node.</p>
+  <div class="rolagem"><table>
+    <thead><tr><th>Arquivo</th><th>Papel</th></tr></thead>
+    <tbody>
+      <tr><td><code>server/app.js</code></td><td>Tabela de rotas, conferência de acesso, leitura do corpo, cabeçalhos de segurança, arquivos estáticos</td></tr>
+      <tr><td><code>server/auth.js</code></td><td>Login, código do autenticador, sessões, token de acesso, usuários e solicitações</td></tr>
+      <tr><td><code>server/stock.js</code></td><td>Itens, movimentações, planilhas, compras, itens removidos</td></tr>
+      <tr><td><code>server/forecast.js</code></td><td>Uso por dia, estimativas e previsão em faturas</td></tr>
+      <tr><td><code>server/logs.js</code></td><td>Registro da API (gravação e consulta)</td></tr>
+      <tr><td><code>server/sql.js</code></td><td>Consulta SQL dos admins (só leitura, papel <code>gestoque_leitura</code>)</td></tr>
+      <tr><td><code>server/photos.js</code></td><td>Fotos de perfil no Supabase Storage privado (ou <code>data/fotos</code> no banco local)</td></tr>
+      <tr><td><code>server/security.js</code></td><td>scrypt, tokens, TOTP (RFC 6238), comparação em tempo constante</td></tr>
+      <tr><td><code>server/db.js</code></td><td>Conexão e <code>SCHEMA</code> (migração)</td></tr>
+      <tr><td><code>server/config.js</code></td><td>Lê o <code>.env</code> e decide banco e ambiente</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="vidro painel topico" id="tipo-api" data-titulo="Tipo de API" data-icone="api">
+  <h2>Tipo de API</h2>
+  <p class="intro">A API é <strong>REST com JSON sobre HTTPS</strong>. Não é SOAP (não há XML nem WSDL) e não é GraphQL. Cada recurso tem um caminho em <code>/api/...</code> e o verbo HTTP diz a ação.</p>
+  <div class="rolagem"><table>
+    <thead><tr><th>Verbo</th><th>Uso no sistema</th></tr></thead>
+    <tbody>
+      <tr><td><code>GET</code></td><td>Consultar (lista, detalhe, exportação). Nunca altera dados.</td></tr>
+      <tr><td><code>POST</code></td><td>Criar ou executar uma ação (lançar movimentação, importar, aprovar)</td></tr>
+      <tr><td><code>PUT</code></td><td>Gravar um valor inteiro (métricas, estimativa manual)</td></tr>
+      <tr><td><code>PATCH</code></td><td>Alterar parte de um registro (item, usuário, preferências)</td></tr>
+      <tr><td><code>DELETE</code></td><td>Apagar (item, estimativa manual)</td></tr>
+    </tbody>
+  </table></div>
+  <div class="exemplo"><strong>Formatos</strong>
+    Pedido: <code>Content-Type: application/json</code>. Importação de planilha: o arquivo vai cru no corpo, com <code>application/octet-stream</code> (limite de 6 MB).
+    Resposta: JSON (<code>Cache-Control: no-store</code>). Exportação: o arquivo (.xlsx ou .csv) com <code>Content-Disposition: attachment</code>.
+    Filtros vão na query string (<code>?item=12&amp;tipo=saida</code>). Ids vão no caminho (<code>/api/itens/12</code>).</div>
+  <div class="rolagem"><table>
+    <thead><tr><th>Status</th><th>Quando</th></tr></thead>
+    <tbody>
+      <tr><td><code>200</code></td><td>Deu certo. Sem dados para devolver: <code>{"ok": true}</code></td></tr>
+      <tr><td><code>400</code></td><td>Dado inválido (a mensagem diz qual)</td></tr>
+      <tr><td><code>401</code></td><td>Sem sessão, sessão vencida, sem token ou token errado. Também senha ou código errados.</td></tr>
+      <tr><td><code>403</code></td><td>Perfil sem permissão, ou ação sem <code>X-GT</code> / de outra origem</td></tr>
+      <tr><td><code>404</code></td><td>Rota ou registro não existe</td></tr>
+      <tr><td><code>409</code></td><td>Conflito (SKU ou login repetido, solicitação já respondida)</td></tr>
+      <tr><td><code>413</code></td><td>Arquivo maior que 6 MB</td></tr>
+      <tr><td><code>423</code></td><td>Usuário bloqueado por erros no código (só admin libera)</td></tr>
+      <tr><td><code>429</code></td><td>Espera após erros de senha ou de código</td></tr>
+      <tr><td><code>500</code> / <code>503</code></td><td>Erro no servidor / banco fora do ar</td></tr>
+    </tbody>
+  </table></div>
+  <p>Todo erro volta como <code>{"error": "mensagem em português"}</code>, pronta para mostrar na tela.</p>
+</section>
+
+<section class="vidro painel topico" id="autenticacao" data-titulo="Autenticação" data-icone="chave">
+  <h2>Autenticação</h2>
+  <p class="intro">O login tem duas etapas (senha + código TOTP). Depois dele, cada chamada à API leva <strong>duas credenciais</strong>: um <strong>cookie de sessão</strong> e um <strong>token de acesso no cabeçalho <code>Authorization: Bearer</code></strong>. <strong>Não é JWT:</strong> os dois são tokens opacos (aleatórios, sem dados dentro) e quem decide se valem é o banco.</p>
+  <div class="rolagem"><table>
+    <thead><tr><th></th><th>Cookie de sessão</th><th>Token de acesso (Bearer)</th></tr></thead>
+    <tbody>
+      <tr><td>Nome</td><td><code>gt_sessao</code></td><td>cabeçalho <code>Authorization: Bearer &lt;token&gt;</code></td></tr>
+      <tr><td>Formato</td><td>32 bytes aleatórios (base64url)</td><td>64 caracteres hex: <code>sha256("api:" + cookie)</code></td></tr>
+      <tr><td>No banco</td><td>só o <code>sha256</code> do valor (<code>sessions.token_hash</code>)</td><td>nada: é recalculado a partir do cookie</td></tr>
+      <tr><td>Quem lê</td><td>só o navegador (<code>HttpOnly</code>: o JavaScript não lê)</td><td>a tela, que guarda só na memória da página</td></tr>
+      <tr><td>Proteções</td><td><code>SameSite=Strict</code>, <code>Secure</code> em https, <code>Path=/</code></td><td>comparado em tempo constante</td></tr>
+      <tr><td>Fim</td><td>ao sair, ao trocar a senha, 45 min sem uso (ou nunca, com "Manter ativo")</td><td>junto com a sessão</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Fluxo</h3>
+  <ol class="passos">
+    <li><code>POST /api/entrar</code> com usuário e senha. Senha certa: cria uma sessão <strong>provisória</strong> (10 min, <code>mfa_ok = false</code>) e devolve <code>{"step": "codigo"}</code> (ou <code>"ativar"</code> com o QR, no primeiro acesso).</li>
+    <li><code>POST /api/entrar/codigo</code> com o código de 6 dígitos. Código certo: apaga a sessão provisória, cria a definitiva com cookie <strong>novo</strong> (evita fixação de sessão), encerra outras sessões do mesmo usuário no mesmo navegador (cookie <code>gt_aparelho</code>) e devolve <code>{"user": ..., "token": ...}</code>.</li>
+    <li>A tela guarda o token na memória e manda em toda chamada. Ao recarregar a página, <code>GET /api/eu</code> devolve o token de novo (só para quem tem o cookie).</li>
+    <li>Cada uso empurra o fim da sessão (gravado no máximo 1 vez por minuto). <code>POST /api/sair</code> apaga a sessão.</li>
+  </ol>
+  <h3>Por que não JWT</h3>
+  <p>JWT carrega os dados assinados e vale até expirar, mesmo que a pessoa saia ou seja desativada. Aqui a sessão mora no banco: sair, trocar a senha, desativar o usuário ou refazer o autenticador derruba o acesso <strong>na hora</strong>. O custo é uma consulta ao banco por chamada, pequeno para o tamanho do sistema.</p>
+  <h3>Por que dois tokens</h3>
+  <p>O cookie vai sozinho em qualquer pedido ao site. O token Bearer só existe para quem leu a resposta de <code>/api/entrar/codigo</code> ou <code>/api/eu</code>, e outro site não consegue ler essas respostas (política de mesma origem). Assim, um pedido montado em outro site, ou alguém que só tenha o cookie, não passa.</p>
+  <h3>Código do autenticador (2FA)</h3>
+  <p>TOTP padrão (RFC 6238): HMAC-SHA1, 6 dígitos, passos de 30 s, aceita o passo anterior e o seguinte. Um código só entra uma vez (<code>last_totp_step</code>, gravado de forma atômica). Erros: espera de 10 s, 100 s e 1000 s; o 4º erro seguido bloqueia até um admin liberar. A resposta de espera (401 do código ou 429) traz <code>retry_in</code> (segundos) e <code>message_template</code> (com <code>{tempo}</code>), e a tela conta o tempo ao vivo.</p>
+</section>
+
+<section class="vidro painel topico" id="protecoes" data-titulo="Proteções" data-icone="escudo">
+  <h2>Proteções</h2>
+  <div class="rolagem"><table>
+    <thead><tr><th>Risco</th><th>Proteção</th><th>Onde</th></tr></thead>
+    <tbody>
+      <tr><td>Pedido forjado por outro site (CSRF)</td><td>Cookie <code>SameSite=Strict</code>; toda ação (não-GET) exige o cabeçalho <code>X-GT: 1</code> e, quando o navegador informa <code>Origin</code>, que seja o próprio site; rotas logadas exigem o token Bearer</td><td><code>app.js</code> <code>handleApi</code></td></tr>
+      <tr><td>Roubo de sessão por script (XSS)</td><td>Cookie <code>HttpOnly</code>; Content-Security-Policy só com scripts do próprio site; textos escapados antes de ir para a tela (<code>esc()</code>)</td><td><code>securityHeaders</code>, <code>vercel.json</code></td></tr>
+      <tr><td>Página dentro de outro site (clickjacking)</td><td><code>X-Frame-Options: DENY</code> e <code>frame-ancestors 'none'</code></td><td>idem</td></tr>
+      <tr><td>Senha vazada do banco</td><td>scrypt com sal aleatório por senha; mínimo de 10 caracteres</td><td><code>security.js</code></td></tr>
+      <tr><td>Força bruta na senha</td><td>5 erros: 15 min de espera; usuário inexistente gasta o mesmo tempo</td><td><code>auth.js</code></td></tr>
+      <tr><td>Força bruta no código</td><td>Esperas de 10 s, 100 s e 1000 s; 4º erro bloqueia; código não repete</td><td><code>auth.js</code></td></tr>
+      <tr><td>Comparação que vaza pelo tempo</td><td><code>crypto.timingSafeEqual</code> no código e no token</td><td><code>security.js</code></td></tr>
+      <tr><td>Acesso direto ao banco</td><td>Schema <code>gestoque</code> fora da Data API do Supabase; RLS ligado em todas as tabelas, sem políticas: só o servidor acessa</td><td><code>db.js</code></td></tr>
+      <tr><td>Teste gravando na loja</td><td>Preview da Vercel ignora <code>DATABASE_URL</code> e usa <code>DATABASE_URL_Dev</code></td><td><code>config.js</code></td></tr>
+      <tr><td>Caminho malicioso em arquivo</td><td>Arquivos só de dentro de <code>public/</code> (caminho normalizado e conferido)</td><td><code>serveStatic</code></td></tr>
+      <tr><td>Corpo gigante</td><td>Limite de 6 MB por pedido</td><td><code>readBody</code></td></tr>
+    </tbody>
+  </table></div>
+  <div class="exemplo"><strong>Pontos de atenção conhecidos</strong>
+    O segredo TOTP fica em texto puro em <code>users.totp_secret</code> (exportações SQL do banco carregam esses segredos). A espera de login (429) é conferida antes da senha, então só aparece para usuários que existem.</div>
+</section>
+
+<section class="vidro painel topico" id="permissoes" data-titulo="Perfis e acesso" data-icone="usuarios">
+  <h2>Perfis e níveis de acesso</h2>
+  <div class="rolagem"><table>
+    <thead><tr><th>Nível da rota</th><th>Exige</th></tr></thead>
+    <tbody>
+      <tr><td><span class="nivel aberto">aberto</span></td><td>Nada de login. Só as que precisam funcionar antes do login ou na página pública /version.</td></tr>
+      <tr><td><span class="nivel logado">logado</span></td><td>Sessão completa (senha + código) + token Bearer. Admin ou gestor.</td></tr>
+      <tr><td><span class="nivel admin">admin</span></td><td>O mesmo de "logado" e perfil admin. Gestor recebe 403.</td></tr>
+    </tbody>
+  </table></div>
+  <p><strong>Admin</strong>: tudo, incluindo usuários, métricas, excluir item, itens removidos e esta documentação. <strong>Gestor</strong>: a operação do dia a dia; pede usuários novos ao admin e vê só o próprio <strong>Perfil</strong> (nome, foto, usuário, perfil, data de cadastro), onde muda só o nome e a foto. A foto fica no <strong>Supabase Storage</strong>, bucket privado <code>fotos-perfil</code> (RLS + política restritiva <code>fotos_perfil_fechado</code> para <code>anon</code>/<code>authenticated</code>), sem link público: o servidor busca com a chave de serviço e entrega por <code>GET /api/eu/foto?u=&lt;id&gt;&amp;v=&lt;versão&gt;</code>, só para quem está logado, com cache privado de 1 ano no navegador. No banco, só caminho, tipo e versão. O Registro da API grava inserir/trocar/remover, nunca a busca. Código: <code>server/photos.js</code>; banco local: <code>data/fotos/</code>.</p>
+  <p>A conferência é sempre no servidor. Esconder um botão na tela é só conforto: a API recusa mesmo que alguém chame direto.</p>
+</section>
+
+<section class="vidro painel topico" id="apis" data-titulo="Lista de APIs" data-icone="lista">
+  <h2>Lista de APIs</h2>
+  <p class="intro">Gerada agora a partir da tabela de rotas do servidor (<code>routes</code> em <code>server/app.js</code>): o que está aqui é exatamente o que está no ar.</p>
+  <div id="lista-apis"></div>
+  <h3>Exemplo de chamada</h3>
+<pre><code>// Dentro da tela do sistema (app.js), a função api() já faz isto:
+fetch('/api/itens', {
+  method: 'GET',
+  credentials: 'same-origin',          // manda o cookie gt_sessao
+  headers: {
+    'X-GT': '1',                       // obrigatório em ações (POST, PUT, PATCH, DELETE)
+    'Authorization': 'Bearer ' + token // token de /api/entrar/codigo ou /api/eu
+  }
+});</code></pre>
+</section>
+
+<section class="vidro painel topico" id="registro" data-titulo="Registro da API" data-icone="lista">
+  <h2>Registro da API (/partner)</h2>
+  <p class="intro">Toda chamada que muda algo, toda exportação e todo pedido que deu erro (inclusive acesso negado) vira uma linha em <code>gestoque.api_logs</code>. A tela <code>/partner</code>, só de admin, mostra a lista e, ao abrir uma linha, o JSON da <strong>solicitação</strong> e da <strong>resposta</strong>.</p>
+  <div class="rolagem"><table>
+    <thead><tr><th>O que entra</th><th>O que não entra</th></tr></thead>
+    <tbody>
+      <tr><td>POST, PUT, PATCH, DELETE (criar, editar, excluir, importar, entrar, sair, aprovar...)</td><td>Consultas GET que deram certo (listas, previsão, a própria tela de registro)</td></tr>
+      <tr><td>Exportações (GET <code>.../exportar</code>)</td><td>O aviso de uso da tela (<code>POST /api/eu/ativo</code>, a cada minuto)</td></tr>
+      <tr><td>Qualquer pedido com status 400 ou mais (401, 403, 404, 409, 500...)</td><td></td></tr>
+    </tbody>
+  </table></div>
+  <ul class="passos">
+    <li><strong>Quem</strong>: usuário da sessão com token válido. Login com senha errada aparece como "login tentado: usuário". Cookie válido sem token aparece como "... · sem token válido".</li>
+    <li><strong>Dados exatos</strong>: pedido e resposta ficam em colunas <code>json</code> (não <code>jsonb</code>), que guardam os campos na ordem em que vieram.</li>
+    <li><strong>Sigilo</strong>: campos <code>password</code>, <code>current</code>, <code>next</code>, <code>code</code>, <code>secret</code>, <code>token</code>, <code>qr</code> etc. viram <code>***</code> antes de gravar, em qualquer nível do JSON.</li>
+    <li><strong>Consulta SQL</strong>: o resultado não é guardado; fica só o SQL e um resumo (linhas, colunas, tempo). Uma rota pode pedir isso com <code>ctx.logResponse</code>.</li>
+    <li><strong>Leveza</strong>: pedido ou resposta acima de 16 KB guarda só um trecho; arquivos enviados ou baixados guardam só nome e tamanho; registros com mais de 90 dias são apagados todo dia às 03:30 (Brasília) pelo <strong>pg_cron</strong> do Supabase (tarefa <code>gestoque-limpar-api-logs</code>), e aos domingos um <code>VACUUM</code> (<code>gestoque-vacuum-api-logs</code>) deixa o espaço pronto para os novos. O servidor tem uma limpeza de reserva a cada 6 h (banco local ou se o agendador falhar).</li>
+    <li><strong>Sem atrasar o clique</strong>: o registro (e a renovação da sessão) roda junto com o pedido e termina depois da resposta (<code>logs.afterReply</code>). Na Vercel, <code>waitUntil</code> mantém a função viva até gravar; sem ele, espera antes de responder para não perder nada. Um erro ao gravar nunca derruba a chamada: só vai para o console.</li>
+  </ul>
+  <p>Código: <code>server/logs.js</code> (gravação, <code>GET /api/logs</code> e <code>GET /api/logs/:id</code>) e o ponto de gravação em <code>handleApi</code>/<code>handle</code> (<code>server/app.js</code>). Tela: <code>public/partner.html</code> + <code>js/partner.js</code>.</p>
+</section>
+
+<section class="vidro painel topico" id="consulta-sql" data-titulo="Consulta SQL" data-icone="api">
+  <h2>Consulta SQL (só admin)</h2>
+  <p class="intro">Tela "Consulta SQL" no menu: o admin escreve SQL (PostgreSQL) e lê qualquer dado de operação direto do banco. É <strong>só leitura</strong>, garantido em camadas, a principal no próprio banco.</p>
+  <div class="rolagem"><table>
+    <thead><tr><th>Camada</th><th>Como</th></tr></thead>
+    <tbody>
+      <tr><td>Papel no banco</td><td><code>gestoque_leitura</code> (sem login): <code>SELECT</code> nas tabelas de operação e no <code>api_logs</code>; na <code>users</code> só colunas sem segredo (sem <code>pass_hash</code> e <code>totp_secret</code>); <code>sessions</code> fechada. RLS com a política <code>leitura_sql</code> só para ele. Criado no <code>SCHEMA</code>; a conexão recebe <code>SET</code> no papel com <code>INHERIT FALSE</code>.</td></tr>
+      <tr><td>Transação</td><td><code>set transaction read only</code> + <code>role</code>, <code>search_path = gestoque</code> e <code>statement_timeout = 8s</code> só dentro dela.</td></tr>
+      <tr><td>Texto da consulta</td><td>Começa com SELECT, WITH, TABLE ou VALUES; sem <code>;</code> no meio; sem funções que troquem de papel ou rodem outro SQL (<code>set_config</code>, <code>query_to_xml</code>, <code>dblink</code>, <code>pg_sleep</code>...). Envolvida em <code>select * from (...) limit 1001</code>, no protocolo estendido, que recusa vários comandos.</td></tr>
+      <tr><td>Resultado</td><td>Até 1000 linhas, colunas com o mesmo nome preservadas (<code>rowMode: 'array'</code>). O resultado é <strong>volátil</strong>: só vai para a tela. O Registro da API guarda quem, quando, o SQL enviado e um resumo (nº de linhas, nomes das colunas, tempo), nunca as linhas (<code>ctx.logResponse</code>).</td></tr>
+    </tbody>
+  </table></div>
+  <p>Rotas: <code>GET /api/sql/tabelas</code> (tabelas e colunas visíveis) e <code>POST /api/sql</code> (<code>{ sql }</code>). Código: <code>server/sql.js</code>. Nomes sem aspas valem em maiúsculas ou minúsculas (<code>Items</code> = <code>items</code>); o preço do item é <code>cost</code>.</p>
+  <div class="exemplo"><strong>Testado em 2026-10-18</strong> No Supabase de dev (Postgres 17, usuário sem superuser): papel criado, consulta com <code>current_user = gestoque_leitura</code>, senha e sessões recusadas, tempo limite cortando em 8 s. No banco local (PGlite) o tempo limite não age.</div>
+</section>
+
+<section class="vidro painel topico" id="banco" data-titulo="Banco de dados" data-icone="banco">
+  <h2>Banco de dados</h2>
+  <p class="intro">PostgreSQL no Supabase, tudo no schema <code>gestoque</code>. Sem <code>DATABASE_URL</code> válido o sistema usa o PGlite em <code>data/pglite</code> (um processo por vez).</p>
+  <div class="rolagem"><table>
+    <thead><tr><th>Tabela</th><th>Guarda</th></tr></thead>
+    <tbody>
+      <tr><td><code>users</code></td><td>Usuários, hash da senha, segredo TOTP, contadores de erro e bloqueios</td></tr>
+      <tr><td><code>sessions</code></td><td>Sessões (hash do cookie, aparelho, se passou do código, quando expira)</td></tr>
+      <tr><td><code>items</code></td><td>Itens do estoque (SKU é a chave das planilhas). <code>units_per_pack</code>: unidades em 1 pacote (null = item comum); o saldo fica em pacotes</td></tr>
+      <tr><td><code>movements</code></td><td>Entradas, saídas e contagens (não se editam)</td></tr>
+      <tr><td><code>overrides</code></td><td>Estimativas manuais de uso</td></tr>
+      <tr><td><code>settings</code></td><td>Métricas da previsão</td></tr>
+      <tr><td><code>user_requests</code></td><td>Pedidos de usuário novo</td></tr>
+      <tr><td><code>removed_items</code>, <code>removed_items_history</code>, <code>removed_items_purchases</code></td><td>Cópia do item excluído, do histórico e das compras</td></tr>
+      <tr><td><code>api_logs</code></td><td>Registro da API (tela /partner): quem, quando, método, caminho, status, tempo, IP, pedido e resposta em <code>json</code></td></tr>
+    </tbody>
+  </table></div>
+  <p><strong>Migração</strong>: editar o <code>SCHEMA</code> em <code>server/db.js</code>, sempre de forma idempotente (<code>if not exists</code>) e só acrescentando. Roda a cada início do servidor. Na Vercel use sempre o <strong>pooler</strong> (porta 6543): a conexão direta só tem IPv6.</p>
+</section>
+
+<section class="vidro painel topico" id="ambientes" data-titulo="Ambientes e publicação" data-icone="nuvem">
+  <h2>Ambientes e publicação</h2>
+  <div class="rolagem"><table>
+    <thead><tr><th></th><th>Produção</th><th>Teste</th></tr></thead>
+    <tbody>
+      <tr><td>Branch</td><td><code>main</code></td><td><code>Dev</code></td></tr>
+      <tr><td>Endereço</td><td>gestoque.vercel.app</td><td>Preview do <code>Dev</code> na Vercel (pede login da Vercel) e o computador</td></tr>
+      <tr><td>Banco</td><td><code>DATABASE_URL</code> (Supabase de produção)</td><td><code>DATABASE_URL_Dev</code> (Supabase de dev); no computador, o <code>.env</code></td></tr>
+      <tr><td>Tarja "Ambiente de teste"</td><td>não aparece</td><td>aparece em todas as páginas (<code>public/js/ambiente.js</code>)</td></tr>
+    </tbody>
+  </table></div>
+  <p>O ambiente vem de <code>VERCEL_ENV</code> (<code>production</code> = produção; o resto = teste) e pode ser forçado com <code>GT_AMBIENTE</code>. Publicar = enviar o <code>Dev</code> para a <code>main</code> (<code>git push origin Dev:main</code>), só com OK do responsável.</p>
+</section>
+
+<section class="vidro painel topico" id="paginas" data-titulo="Páginas e endereços" data-icone="paginas">
+  <h2>Páginas e endereços</h2>
+  <p class="intro">Dentro do sistema o endereço nunca muda. Só as páginas de ajuda têm endereço próprio.</p>
+  <div class="rolagem"><table>
+    <thead><tr><th>Endereço</th><th>Página</th><th>Quem vê</th></tr></thead>
+    <tbody>
+      <tr><td><code>/</code></td><td>O sistema (login e telas)</td><td>todos; as telas pedem login</td></tr>
+      <tr><td><code>/version</code> (<code>/novidades</code>, <code>/versao</code>, <code>/release</code>, <code>/releases</code>)</td><td>Novidades da versão</td><td>público</td></tr>
+      <tr><td><code>/duvidas</code> (<code>/duvida</code>, <code>/manual</code>)</td><td>Central de dúvidas</td><td>público</td></tr>
+      <tr><td><code>/duvidasdev</code> (<code>/duvidas-dev</code>)</td><td>Esta documentação técnica</td><td>só admin logado</td></tr>
+      <tr><td><code>/partner</code></td><td>Registro da API</td><td>só admin logado</td></tr>
+    </tbody>
+  </table></div>
+  <p>Os apelidos ficam em <code>PAGE_ALIASES</code> (<code>server/app.js</code>) e nos <code>rewrites</code> do <code>vercel.json</code>: os dois precisam ser mantidos juntos. Esta página é só uma casca em <code>public/duvidasdev.html</code>; o texto fica em <code>server/paginas/duvidasdev.html</code> e só sai por <code>GET /api/dev/documentacao</code> (admin).</p>
+</section>
+
+<section class="vidro painel topico" id="receitas" data-titulo="Como fazer" data-icone="ferramenta">
+  <h2>Como fazer</h2>
+  <div class="faq">
+    <details><summary>Criar uma rota nova na API</summary>
+      <p>Acrescente uma linha em <code>routes</code> (<code>server/app.js</code>): <code>[método, /^\/api\/caminho$/, função, 'logado' ou 'admin', 'descrição']</code>. Nunca <code>'aberto'</code> sem motivo forte. A função recebe <code>ctx</code> (<code>user</code>, <code>body</code>, <code>params</code>, <code>url</code>, <code>raw</code>) e devolve um objeto (vira JSON) ou <code>{file, name, type}</code> para download. Erros: <code>throw new HttpError(status, 'mensagem')</code>. A rota aparece sozinha nesta lista; atualize também <code>docs/API.md</code>.</p></details>
+    <details><summary>Criar uma página nova</summary>
+      <p>Inclua <code>/js/tema.js</code> no &lt;head&gt; e <code>/js/ambiente.js</code> (tarja de teste) no fim do &lt;body&gt;. Se a página tiver endereço próprio, acrescente o apelido em <code>PAGE_ALIASES</code> e no <code>vercel.json</code>. Se for restrita, o conteúdo não pode ficar em <code>public/</code>: sirva por uma rota de API protegida, como esta.</p></details>
+    <details><summary>Mudar o banco</summary>
+      <p>Acrescente ao <code>SCHEMA</code> em <code>server/db.js</code> com <code>create table if not exists</code> / <code>alter table ... add column if not exists</code>. Nunca apague nem renomeie coluna em uso. Novas tabelas: ligue o RLS como as outras.</p></details>
+    <details><summary>Lançar uma versão nova</summary>
+      <p>Suba a versão em <code>package.json</code> e <code>package-lock.json</code>, acrescente o bloco no topo de <code>server/novidades.json</code>, atualize <code>public/duvidas.html</code> e esta documentação se algo técnico mudou. Commit no <code>Dev</code>; produção só com OK.</p></details>
+    <details><summary>Manter o sistema rápido</summary>
+      <p>Cada ida ao banco custa caro (~147 ms do computador até o Supabase de dev; ~70 ms do Preview). Consultas que não dependem uma da outra vão juntas em <code>Promise.all</code>; escrita frequente vira um comando SQL só (veja <code>createMovement</code>: CTE com <code>for update</code>, atômico sem <code>begin</code>/<code>commit</code>). Trabalho que não muda a resposta vai para <code>log.side</code> e termina depois dela. Para medir: servidor local com <code>GT_ATRASO_BANCO=147</code>, que simula a demora do Supabase.</p></details>
+    <details><summary>Testar sem mexer no banco de dev</summary>
+      <p>Suba um servidor separado com banco local: <code>DATABASE_URL=''</code> e <code>PORT=3300</code>. <code>GT_ESPERAS_CODIGO=1,2,3</code> encurta as esperas do código. Para simular a produção (sem tarja): <code>GT_AMBIENTE=producao</code>.</p></details>
+  </div>
+</section>
