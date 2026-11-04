@@ -19,7 +19,7 @@ Atualizado em 2026-10-22. Atualize ao terminar cada tarefa importante.
   aviso a cada entrada; "Recomeçar demonstração". Testada em `npm run demo:servir` (subpasta /GesToque/ como no Pages):
   login vazio e como gestor, estoque, movimentação, previsão, exportar/importar xlsx, CSV, SQL (escrita recusada), foto,
   /partner, /duvidasdev, /novidades, /duvidas, dados mantidos ao recarregar, Recomeçar. Sistema real conferido sem mudança.
-  **Falta:** ligar o GitHub Pages (Settings > Pages > Source = GitHub Actions) e enviar para a `main`.
+  No ar desde 2026-11-04 em https://daviribrito.github.io/GesToque/ (Pages com Source = GitHub Actions; publica a cada push na `main`).
 
 ## 2. Próxima tarefa
 1. Criar os projetos do Supabase (produção e dev) e preencher o `.env` a partir do `.env.example`.
