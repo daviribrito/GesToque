@@ -271,4 +271,5 @@ async function handle(req, res) {
   }
 }
 
-module.exports = { handle };
+// routes: a demonstração no navegador (demo/navegador.js) usa a mesma tabela.
+module.exports = { handle, routes };

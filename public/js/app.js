@@ -9,6 +9,10 @@
 
   const state = { user: null, view: 'estoque', items: [], windowDays: 90, forecast: null, month: null, filter: { text: '', category: '', moveType: '' } };
 
+  // Demonstração (site estático, ver demo/navegador.js): o js/demo.js, carregado antes, responde a API
+  // dentro do navegador e deixa aqui o código fixo do 2FA e o "Recomeçar demonstração". No sistema real é null.
+  const DEMO = window.GT_DEMO || null;
+
   // ---------- Utilidades ----------
 
   const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -275,7 +279,13 @@
   }
 
   // Janelas ao entrar: tutorial (primeiro acesso) ou aviso de versão nova; o alerta de estoque espera a janela fechar.
+  // Na demonstração, antes de tudo, o aviso do que é de mentira e onde ficam os dados.
   function welcomeDialogs(forceAlert = false) {
+    if (DEMO && !demoNoticeShown()) {
+      demoNoticeDialog();
+      $dialog.addEventListener('close', () => welcomeDialogs(forceAlert), { once: true });
+      return;
+    }
     maybeTutorial()
       .then((shown) => shown || maybeWhatsNew())
       .finally(() => maybeLowStockAlert(forceAlert));
@@ -315,6 +325,43 @@
       });
       // Foco no "Entendi" para quem usa teclado, sem rolar: no celular a janela é alta e o topo sumiria.
       dlg.querySelector('.rodape .botao:not(.claro)').focus({ preventScroll: true });
+      dlg.scrollTop = 0;
+    }, 'novidade-dialogo');
+  }
+
+  // ---------- Aviso da demonstração ----------
+  // Aparece a cada entrada (login) e uma vez por aba ao recarregar já dentro.
+
+  const DEMO_NOTICE_KEY = 'gt_demo_aviso';
+  function demoNoticeShown() {
+    try { return sessionStorage.getItem(DEMO_NOTICE_KEY) === '1'; } catch { return state.demoNoticeMem; }
+  }
+  function setDemoNoticeShown(shown) {
+    state.demoNoticeMem = shown;
+    try { shown ? sessionStorage.setItem(DEMO_NOTICE_KEY, '1') : sessionStorage.removeItem(DEMO_NOTICE_KEY); } catch { /* fica na memória */ }
+  }
+
+  function demoNoticeDialog() {
+    setDemoNoticeShown(true);
+    openDialog(`
+      <div class="demo-aviso">
+        <div class="novidade-topo">
+          <img class="novidade-mascote" src="/img/caixa.svg" alt="">
+          <div>
+            <span class="novidade-selo">Demonstração</span>
+            <h2>Você está numa demonstração</h2>
+            <p class="item-sub">Pode mexer à vontade: nada aqui é da loja de verdade.</p>
+          </div>
+        </div>
+        <ul class="demo-lista">
+          <li><strong>Login e 2FA são de exemplo.</strong> Qualquer usuário e senha entram (até em branco) e o código da verificação em duas etapas é sempre <strong>${esc(DEMO.code)}</strong>, preenchido sozinho. Para ver o sistema como gestor, entre com o usuário <strong>gestor</strong>.</li>
+          <li><strong>Os dados ficam só neste navegador</strong> (no armazenamento local dele). Nada vai para um servidor e ninguém mais vê o que você fizer.</li>
+          <li><strong>Limpar os dados do navegador apaga tudo.</strong> Para voltar ao estoque de exemplo: Configurações &gt; Recomeçar demonstração.</li>
+          <li>O sistema real usa senha com hash scrypt, 2FA TOTP com app autenticador, sessão no servidor e banco Postgres no Supabase.</li>
+        </ul>
+        <div class="rodape"><button class="botao" type="button" data-fechar>Entendi, vamos lá</button></div>
+      </div>`, (dlg) => {
+      dlg.querySelector('.rodape .botao').focus({ preventScroll: true });
       dlg.scrollTop = 0;
     }, 'novidade-dialogo');
   }
@@ -588,6 +635,7 @@
       <h1>GesToque</h1>
       <p class="sub">Estoque e previsão de compras da loja.</p>
       ${message ? `<p class="nota" role="status">${esc(message)}</p>` : ''}
+      ${DEMO ? '<p class="nota demo-nota"><strong>Demonstração:</strong> entre com qualquer usuário e senha, ou deixe em branco. Com o usuário <strong>gestor</strong>, você vê o sistema como gestor.</p>' : ''}
       <form novalidate>
         <label class="campo"><span>Usuário</span><input name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus></label>
         <label class="campo"><span>Senha</span><input name="password" type="password" autocomplete="current-password" required></label>
@@ -634,10 +682,19 @@
         state.user = out.user;
         activity.last = activity.ping = Date.now();
         renderShell();
+        if (DEMO) setDemoNoticeShown(false); // a cada entrada o aviso da demonstração aparece de novo
         welcomeDialogs(true);
       });
     });
     form.code.focus();
+    // Demonstração: o 2FA é um código fixo. Mostra num alerta do navegador, preenche e confirma sozinho.
+    if (info.demo_code) {
+      setTimeout(() => {
+        alert(`Demonstração: o código de verificação em duas etapas (2FA) é ${info.demo_code}.\n\nNo sistema real ele vem do app autenticador do celular. Aqui ele será preenchido sozinho.`);
+        form.code.value = info.demo_code;
+        form.requestSubmit();
+      }, 300);
+    }
   }
 
   // ---------- Estrutura ----------
@@ -2206,6 +2263,11 @@
         </div>
         <p class="item-sub">Vale para este computador. No celular o menu fica sempre na barra de baixo.</p>
       </section>
+      ${DEMO ? `<section class="painel vidro ajustes">
+        <h2>Demonstração</h2>
+        <p class="item-sub">Os dados desta demonstração ficam só neste navegador. Recomeçar apaga o que você fez e volta ao estoque de exemplo.</p>
+        <div><button class="botao claro" type="button" data-recomecar>Recomeçar demonstração</button></div>
+      </section>` : ''}
       <section class="painel vidro ajustes">
         <h2>Senha</h2>
         <p class="item-sub">Ao trocar, as suas outras sessões abertas são encerradas.</p>
@@ -2239,6 +2301,11 @@
       try { sessionStorage.setItem('gt_voltar', 'configuracoes'); } catch { /* sem armazenamento: sem botão de voltar */ }
     }));
     tela.querySelector('[data-ver-tutorial]').addEventListener('click', tutorialDialog);
+    tela.querySelector('[data-recomecar]')?.addEventListener('click', (e) => {
+      if (!confirm('Recomeçar a demonstração? Tudo o que você fez aqui será apagado e o estoque de exemplo volta ao início.')) return;
+      e.currentTarget.disabled = true;
+      DEMO.reset();
+    });
     tela.querySelector('[data-ver-aviso]').addEventListener('click', async (e) => {
       const btn = e.currentTarget;
       btn.disabled = true;
@@ -2306,6 +2373,8 @@
   window.addEventListener('pageshow', (e) => { if (e.persisted) returnFromHelp(); });
 
   (async () => {
+    // Na primeira visita a demonstração baixa o banco (alguns MB) e carrega o estoque de exemplo.
+    if (DEMO) $app.innerHTML = '<p class="demo-carregando" role="status">Preparando a demonstração… Na primeira visita pode levar alguns segundos.</p>';
     try {
       state.user = (await api('GET', '/api/eu')).user;
       const back = returnFromHelp();

@@ -14,6 +14,13 @@ Atualizado em 2026-10-22. Atualize ao terminar cada tarefa importante.
   (`users.tutorial_seen_at`, `POST /api/eu/tutorial`), marcado ao abrir; rever em Configurações > Ajuda. Quem vê o tutorial
   já fica com a versão atual como vista (sem o aviso de versão nova logo em seguida). Testado com gestor e admin no banco local.
 
+- 2026-11-04 (v0.1.5): demonstração estática para portfólio (`demo/`, `scripts/build-demo.js`, workflow `demo-pages.yml`).
+  Roda no navegador com PGlite no IndexedDB; login/2FA de exemplo (código 123456 em alert, preenchido sozinho);
+  aviso a cada entrada; "Recomeçar demonstração". Testada em `npm run demo:servir` (subpasta /GesToque/ como no Pages):
+  login vazio e como gestor, estoque, movimentação, previsão, exportar/importar xlsx, CSV, SQL (escrita recusada), foto,
+  /partner, /duvidasdev, /novidades, /duvidas, dados mantidos ao recarregar, Recomeçar. Sistema real conferido sem mudança.
+  **Falta:** ligar o GitHub Pages (Settings > Pages > Source = GitHub Actions) e enviar para a `main`.
+
 ## 2. Próxima tarefa
 1. Criar os projetos do Supabase (produção e dev) e preencher o `.env` a partir do `.env.example`.
 2. Criar o projeto na Vercel ligado ao repositório do GitHub (`DATABASE_URL` e `DATABASE_URL_Dev`, sempre pelo pooler).

@@ -839,6 +839,14 @@ dialog.novidade-dialogo { width: min(640px, calc(100vw - 32px)); }
   .novidade-mascote, .novidade-selo, .novidade-grupo, .novidade-grupo li { animation: none; }
 }
 
+/* ---------- Demonstração (site estático) ---------- */
+
+.demo-aviso { display: grid; gap: 18px; }
+.demo-aviso .rodape { margin-top: 0; }
+.demo-lista { margin: 0; padding-left: 20px; display: grid; gap: 10px; }
+.demo-nota { border-left: 3px solid var(--destaque); }
+.demo-carregando { display: grid; place-items: center; min-height: 100vh; padding: 24px; text-align: center; color: var(--suave); font-weight: 600; }
+
 /* ---------- Tutorial do primeiro acesso ---------- */
 
 dialog.tutorial-dialogo { width: min(520px, calc(100vw - 32px)); }

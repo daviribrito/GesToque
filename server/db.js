@@ -369,6 +369,7 @@ async function connect() {
 }
 
 module.exports = {
+  SCHEMA, // também usado pela demonstração no navegador (demo/db.js)
   init,
   kind: () => impl.kind,
   query: (text, params) => impl.query(text, params),

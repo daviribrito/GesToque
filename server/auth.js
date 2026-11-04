@@ -521,6 +521,7 @@ async function updateUser(ctx) {
 }
 
 module.exports = {
+  publicUser,
   loadSession,
   checkApiToken,
   touchSession,

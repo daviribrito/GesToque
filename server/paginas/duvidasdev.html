@@ -219,6 +219,14 @@ fetch('/api/itens', {
     </tbody>
   </table></div>
   <p>O ambiente vem de <code>VERCEL_ENV</code> (<code>production</code> = produção; o resto = teste) e pode ser forçado com <code>GT_AMBIENTE</code>. Publicar = enviar o <code>Dev</code> para a <code>main</code> (<code>git push origin Dev:main</code>), só com OK do responsável.</p>
+  <h3>Demonstração (GitHub Pages)</h3>
+  <p>Site estático, separado do sistema real, que roda inteiro no navegador: <code>npm run demo:build</code> gera <code>demo-site/</code> e o workflow <code>.github/workflows/demo-pages.yml</code> publica a cada push na <code>main</code>.</p>
+  <ul>
+    <li>O <code>scripts/build-demo.js</code> empacota as rotas e a lógica de <code>server/</code> (esbuild) em <code>js/demo.js</code>, trocando só <code>db</code>, <code>config</code>, <code>security</code>, <code>auth</code> e <code>photos</code> pelos arquivos de <code>demo/</code>.</li>
+    <li><code>demo/navegador.js</code> troca o <code>fetch</code>: chamadas a <code>/api/...</code> são respondidas ali, com a mesma tabela <code>routes</code> de <code>server/app.js</code>. Banco = PGlite no IndexedDB do visitante, com o estoque de exemplo de <code>scripts/exemplo-dados.js</code>.</li>
+    <li>Login de demonstração (<code>demo/auth.js</code>): qualquer usuário e senha; 2FA fixo <code>123456</code>, mostrado em <code>alert()</code> e preenchido sozinho; a sessão é o id guardado no <code>localStorage</code>. Ambiente <code>demo</code>: selo "Demonstração".</li>
+    <li>Nada disso existe no servidor real: o <code>app.js</code> só muda de comportamento quando <code>window.GT_DEMO</code> existe.</li>
+  </ul>
 </section>
 
 <section class="vidro painel topico" id="paginas" data-titulo="Páginas e endereços" data-icone="paginas">

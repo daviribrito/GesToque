@@ -1,18 +1,26 @@
 {
   "name": "gestoque",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "private": true,
   "description": "Gestão de estoque e previsão de compras da GesToque",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "start": "node server/index.js",
     "admin": "node scripts/admin-setup.js",
-    "exemplo": "node scripts/seed-demo.js"
+    "exemplo": "node scripts/seed-demo.js",
+    "demo:build": "node scripts/build-demo.js",
+    "demo:servir": "node scripts/servir-demo.js"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.2.17",
     "exceljs": "^4.4.0",
     "pg": "^8.13.1",
     "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "buffer": "^6.0.3",
+    "esbuild": "^0.24.2"
   }
 }

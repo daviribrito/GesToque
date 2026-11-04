@@ -6,12 +6,15 @@
   try {
     const { ambiente } = await (await fetch('/api/novidades')).json();
     if (!ambiente || ambiente === 'producao') return;
+    // 'demo': a demonstração estática (demo/navegador.js), com dados só no navegador.
+    const demo = ambiente === 'demo';
     const tag = document.createElement('div');
     tag.className = 'selo-ambiente';
     tag.setAttribute('role', 'status');
-    tag.textContent = 'Ambiente de teste';
+    tag.textContent = demo ? 'Demonstração' : 'Ambiente de teste';
     document.body.append(tag);
     document.documentElement.classList.add('ambiente-teste');
-    if (!document.title.startsWith('[Teste]')) document.title = '[Teste] ' + document.title;
+    const prefix = demo ? '[Demo]' : '[Teste]';
+    if (!document.title.startsWith(prefix)) document.title = `${prefix} ${document.title}`;
   } catch { /* sem a informação, não mostra nada */ }
 })();

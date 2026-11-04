@@ -2,6 +2,24 @@
   "_como_editar": "Cada versão nova entra no topo da lista 'releases'. A página /novidades lê este arquivo a cada acesso: não precisa reiniciar o sistema. Em cada seção, 'type' diz o selo do aviso de versão nova: 'novo', 'melhoria' ou 'ajuste'.",
   "releases": [
     {
+      "version": "0.1.5",
+      "date": "2026-11-04",
+      "title": "Demonstração para experimentar sem instalar",
+      "summary": "Uma versão de demonstração do GesToque que roda inteira no navegador, com estoque de exemplo, para conhecer o sistema sem conta nem servidor. O sistema da loja continua igual.",
+      "sections": [
+        {
+          "title": "Demonstração no navegador",
+          "type": "novo",
+          "items": [
+            "Site de demonstração publicado no GitHub Pages, com todas as telas e o estoque de exemplo com 90 dias de movimentações.",
+            "Qualquer usuário e senha entram. O código da verificação em duas etapas é fixo, aparece num alerta e é preenchido sozinho. Com o usuário gestor, dá para ver o sistema como gestor.",
+            "Os dados ficam guardados só no navegador de quem está usando. Um aviso explica isso a cada entrada, e Configurações tem o botão Recomeçar demonstração.",
+            "O sistema da loja não muda: continua com senha, app autenticador e banco no servidor."
+          ]
+        }
+      ]
+    },
+    {
       "version": "0.1.4",
       "date": "2026-10-22",
       "title": "Tutorial rápido no primeiro acesso",

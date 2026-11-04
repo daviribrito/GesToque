@@ -28,6 +28,13 @@ Outubro de 2026. Acrescente novas no fim da seção correspondente.
 - Capacitor abrindo o site publicado: reaproveita a interface e atualiza sem APK novo.
 - APK gerado pelo GitHub Actions (sem Android Studio); endereço na variável `APP_URL` do repositório.
 
+## 5b. Demonstração (portfólio)
+- 2026-11-04: demo **separada** do sistema real (escolha do usuário), estática no GitHub Pages, para recrutadores.
+- Roda inteira no navegador: `scripts/build-demo.js` empacota `server/` com esbuild, trocando só `db`, `config`, `security`, `auth` e `photos` pelos de `demo/`. Banco = PGlite no IndexedDB do visitante, começando com o estoque de exemplo.
+- Login de exemplo: qualquer usuário/senha (até vazios); usuário existente (ex.: `gestor`) entra como ele, o resto como `visitante` (admin). 2FA fixo `123456`, mostrado em `alert()` e preenchido sozinho.
+- Aviso "Você está numa demonstração" a cada login (e 1x por aba ao recarregar), antes do tutorial. "Recomeçar demonstração" em Configurações apaga o IndexedDB.
+- Endereços absolutos viram relativos no build (o Pages serve em `/GesToque/`). Publica a cada push na `main` (`.github/workflows/demo-pages.yml`).
+
 ## 6. Versionamento
 - SemVer a partir de 0.1.0. O usuário escolheu 0.1.1 para a leva seguinte (mesmo com funcionalidades novas), e 0.1.2 para a leva de 2026-10-18 (token da API, /duvidasdev, /partner, menu no topo, tarja em todas as páginas, "Voltar ao sistema" direto). As duas saem juntas na próxima publicação; /version mostra cada uma separada.
 - Notas em `server/novidades.json`, exibidas em /version; manual em /duvidas.
