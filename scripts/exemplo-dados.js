@@ -1,24 +1,28 @@
-// Itens e 90 dias de movimentações de exemplo. Usado pelo carregar-exemplo (banco local, scripts/seed-demo.js)
+// Itens genéricos (embalagens, descartáveis, mercearia, limpeza, EPI) e 90 dias de movimentações de exemplo. Usado pelo carregar-exemplo (banco local, scripts/seed-demo.js)
 // e pela demonstração no navegador (demo/navegador.js). Os números são inventados.
 
 const ITEMS = [
   // sku, nome, categoria, unidade, custo, lote, prazo, mínimo, uso médio por dia
-  ['SRV-BAU', 'Base de sorvete baunilha 10 L', 'Bases', 'balde', 89.9, 1, 5, 4, 2.4],
-  ['SRV-CHO', 'Base de sorvete chocolate 10 L', 'Bases', 'balde', 94.5, 1, 5, 3, 1.3],
-  ['LEI-INT', 'Leite integral 1 L', 'Laticínios', 'cx 12', 62.0, 1, 3, 5, 3.1],
-  ['CAL-MOR', 'Calda de morango 1,3 kg', 'Caldas', 'un', 27.8, 6, 7, 6, 0.9],
-  ['CAL-CHO', 'Calda de chocolate 1,3 kg', 'Caldas', 'un', 29.4, 6, 7, 6, 1.4],
-  ['CAL-CAR', 'Calda de caramelo 1,3 kg', 'Caldas', 'un', 28.9, 6, 7, 4, 0.6],
-  ['CHA-SPR', 'Chantilly spray 250 g', 'Coberturas', 'un', 17.5, 12, 7, 12, 2.2],
-  ['PAC-MAL', 'Paçoca moída 1 kg', 'Complementos', 'kg', 24.0, 5, 10, 3, 0.5],
-  ['BIS-ORE', 'Biscoito recheado triturado 1 kg', 'Complementos', 'kg', 38.6, 5, 10, 4, 0.8],
-  ['CAF-EXP', 'Café solúvel 500 g', 'Complementos', 'un', 41.2, 4, 10, 2, 0.2],
-  ['COP-400', 'Copo descartável 400 ml', 'Embalagens', 'cx 500', 185.0, 1, 14, 2, 0.31],
-  ['COP-500', 'Copo descartável 500 ml', 'Embalagens', 'cx 500', 212.0, 1, 14, 2, 0.22],
-  ['TAM-BOL', 'Tampa bolha', 'Embalagens', 'cx 1000', 148.0, 1, 14, 1, 0.26],
-  ['CAN-LIS', 'Canudo listrado', 'Embalagens', 'cx 2000', 96.0, 1, 14, 1, 0.13],
-  ['SAC-DEL', 'Sacola para delivery', 'Embalagens', 'pct 250', 58.0, 2, 14, 2, 0.18],
-  ['GUA-PAP', 'Guardanapo', 'Descartáveis', 'pct 1000', 21.5, 4, 7, 4, 0.35],
+  // Genérico: embalagens, descartáveis, mercearia de restaurante, limpeza e EPI.
+  ['CX-4030', 'Caixa de papelão 40×30×20', 'Embalagens', 'un', 3.9, 25, 7, 60, 6.5],
+  ['CX-6040', 'Caixa de papelão 60×40×40', 'Embalagens', 'un', 7.4, 25, 7, 30, 2.8],
+  ['FIT-ADE', 'Fita adesiva transparente 45 mm', 'Embalagens', 'rolo', 6.2, 12, 5, 24, 2.1],
+  ['SAC-KRA', 'Sacola kraft média', 'Embalagens', 'pct 100', 38.0, 5, 10, 4, 0.45],
+  ['COP-300', 'Copo descartável 300 ml', 'Descartáveis', 'cx 1000', 89.0, 1, 10, 3, 0.32],
+  ['GUA-PAP', 'Guardanapo de papel', 'Descartáveis', 'pct 1000', 21.5, 4, 7, 4, 0.35],
+  ['TAL-DES', 'Talher descartável (kit)', 'Descartáveis', 'cx 500', 64.0, 1, 10, 2, 0.14],
+  ['MAR-ALU', 'Marmita de alumínio 750 ml', 'Descartáveis', 'cx 100', 72.0, 2, 10, 3, 0.4],
+  ['OLE-SOJ', 'Óleo de soja 900 ml', 'Mercearia', 'cx 20', 158.0, 1, 4, 2, 0.55],
+  ['ARR-T1', 'Arroz tipo 1 5 kg', 'Mercearia', 'fardo 6', 149.0, 1, 5, 2, 0.4],
+  ['FEI-CAR', 'Feijão carioca 1 kg', 'Mercearia', 'fardo 10', 79.0, 1, 5, 2, 0.35],
+  ['FAR-TRI', 'Farinha de trigo 5 kg', 'Mercearia', 'saco', 27.5, 4, 5, 6, 0.9],
+  ['ACU-REF', 'Açúcar refinado 1 kg', 'Mercearia', 'fardo 10', 46.0, 1, 5, 2, 0.3],
+  ['LEI-INT', 'Leite integral 1 L', 'Laticínios', 'cx 12', 62.0, 1, 3, 5, 1.6],
+  ['DET-5L', 'Detergente neutro 5 L', 'Limpeza', 'galão', 24.9, 4, 7, 4, 0.5],
+  ['ALC-70', 'Álcool 70% 1 L', 'Limpeza', 'un', 9.8, 12, 7, 12, 1.4],
+  ['PAN-MUL', 'Pano multiuso (rolo)', 'Limpeza', 'rolo', 32.0, 2, 7, 3, 0.25],
+  ['LUV-NIT', 'Luva nitrílica M', 'EPI', 'cx 100', 42.0, 5, 10, 5, 0.6],
+  ['TOU-DES', 'Touca descartável', 'EPI', 'pct 100', 18.5, 5, 10, 3, 0.2],
 ];
 
 // Grava os itens e as movimentações numa transação. db: o módulo de banco (server/db.js ou demo/db.js).
@@ -51,7 +55,9 @@ async function seed(db) {
       for (let d = 91; d >= 1; d--) {
         const at = now - d * DAY;
         const weekend = [0, 6].includes(new Date(at).getDay()) ? 1.5 : 0.85;
-        const use = Math.min(balance, Math.round(daily * weekend * (0.6 + rand() * 0.8) * 100) / 100);
+        // Item que sai 1 ou mais por dia (caixa, rolo, frasco) sai em número inteiro; os de pouca saída, em fração da embalagem.
+        const raw = daily * weekend * (0.6 + rand() * 0.8);
+        const use = Math.min(balance, daily >= 1 ? Math.round(raw) : Math.round(raw * 100) / 100);
         if (use > 0) await move('saida', -use, at, 'Consumo do dia');
         if (balance < daily * 8) {
           await move('entrada', Math.ceil((daily * 18) / pack) * pack, at + 3600000, 'Compra', cost);
@@ -62,4 +68,7 @@ async function seed(db) {
   });
 }
 
-module.exports = { ITEMS, seed };
+// Sobe quando a lista de itens muda: a demonstração no navegador recomeça sozinha uma vez com o exemplo novo.
+const VERSION = 2;
+
+module.exports = { ITEMS, VERSION, seed };

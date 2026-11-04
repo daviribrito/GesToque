@@ -33,6 +33,7 @@ Outubro de 2026. Acrescente novas no fim da seção correspondente.
 - Roda inteira no navegador: `scripts/build-demo.js` empacota `server/` com esbuild, trocando só `db`, `config`, `security`, `auth` e `photos` pelos de `demo/`. Banco = PGlite no IndexedDB do visitante, começando com o estoque de exemplo.
 - Login de exemplo: qualquer usuário/senha (até vazios); usuário existente (ex.: `gestor`) entra como ele, o resto como `visitante` (admin). 2FA fixo `123456`, mostrado em `alert()` e preenchido sozinho.
 - Aviso "Você está numa demonstração" a cada login (e 1x por aba ao recarregar), antes do tutorial. "Recomeçar demonstração" em Configurações apaga o IndexedDB.
+- Estoque de exemplo genérico (não de sorveteria): embalagens, descartáveis, mercearia, limpeza, EPI. `exemplo-dados.js` tem `VERSION`: ao mudar a lista, suba o número e a demo de quem já visitou recomeça uma vez sozinha.
 - Endereços absolutos viram relativos no build (o Pages serve em `/GesToque/`). Publica a cada push na `main` (`.github/workflows/demo-pages.yml`).
 
 ## 6. Versionamento

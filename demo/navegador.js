@@ -26,12 +26,37 @@ async function seedUsers() {
 }
 
 // Na primeira visita (ou depois de "Recomeçar"), cria os usuários e carrega o estoque de exemplo.
+// Se o exemplo guardado é de uma versão anterior (exemplo.VERSION), recomeça a demonstração uma vez.
 async function start() {
   await db.init(BASE);
-  await seedUsers();
+  const saved = (await db.query("select value from gestoque.settings where key = 'demo_exemplo'")).rows[0];
   const has = (await db.query('select count(*)::int as n from gestoque.items')).rows[0].n;
-  if (!has) await exemplo.seed(db);
+  if (has && (!saved || saved.value !== exemplo.VERSION)) {
+    await reset();
+    return new Promise(() => {}); // a página está recarregando
+  }
+  await seedUsers();
+  if (!has) {
+    await exemplo.seed(db);
+    await db.query(
+      "insert into gestoque.settings (key, value) values ('demo_exemplo', $1::jsonb) on conflict (key) do update set value = excluded.value",
+      [JSON.stringify(exemplo.VERSION)]
+    );
+  }
 }
+
+// Apaga o banco e as marcas da demo neste navegador e recarrega a página.
+async function reset() {
+  await db.wipe();
+  try {
+    // Apaga sessão, avisos vistos e alertas; mantém só o modo de cor e a posição do menu.
+    const keep = new Set(['gt_tema', 'gt_menu_posicao', 'gt_menu_recolhido']);
+    for (const k of Object.keys(localStorage)) if (k.startsWith('gt_') && !keep.has(k)) localStorage.removeItem(k);
+    sessionStorage.clear();
+  } catch { /* sem armazenamento */ }
+  location.reload();
+}
+
 const ready = start();
 ready.catch((err) => console.error('Demonstração: o banco não iniciou.', err));
 
@@ -113,13 +138,6 @@ window.GT_DEMO = {
   ready,
   async reset() {
     await ready.catch(() => {});
-    await db.wipe();
-    try {
-      // Apaga sessão, avisos vistos e alertas; mantém só o modo de cor e a posição do menu.
-      const keep = new Set(['gt_tema', 'gt_menu_posicao', 'gt_menu_recolhido']);
-      for (const k of Object.keys(localStorage)) if (k.startsWith('gt_') && !keep.has(k)) localStorage.removeItem(k);
-      sessionStorage.clear();
-    } catch { /* sem armazenamento */ }
-    location.reload();
+    await reset();
   },
 };

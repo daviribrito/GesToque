@@ -2,6 +2,23 @@
   "_como_editar": "Cada versão nova entra no topo da lista 'releases'. A página /novidades lê este arquivo a cada acesso: não precisa reiniciar o sistema. Em cada seção, 'type' diz o selo do aviso de versão nova: 'novo', 'melhoria' ou 'ajuste'.",
   "releases": [
     {
+      "version": "0.1.6",
+      "date": "2026-11-04",
+      "title": "Estoque de exemplo para qualquer negócio",
+      "summary": "A demonstração e os dados de exemplo deixaram de ser de sorveteria: agora mostram embalagens, descartáveis, mercearia de restaurante, limpeza e EPI.",
+      "sections": [
+        {
+          "title": "Dados de exemplo",
+          "type": "ajuste",
+          "items": [
+            "19 itens genéricos: caixas de papelão, fita adesiva, copos e talheres descartáveis, marmitas, óleo, arroz, feijão, farinha, detergente, álcool, luvas e toucas.",
+            "Itens que saem um ou mais por dia (caixas, rolos, frascos) têm saldo em número inteiro.",
+            "Quem já tinha aberto a demonstração recebe o estoque novo sozinho, uma vez."
+          ]
+        }
+      ]
+    },
+    {
       "version": "0.1.5",
       "date": "2026-11-04",
       "title": "Demonstração para experimentar sem instalar",
